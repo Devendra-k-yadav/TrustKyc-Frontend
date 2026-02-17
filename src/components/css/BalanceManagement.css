@@ -1,0 +1,82 @@
+/* Center Modal */
+.custom-modal {
+  width: 360px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  position: fixed;
+  right: 50%;
+  top: 50%;
+  transform: translate(50%, -50%);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+  z-index: 999;
+  animation: popin 0.2s ease-out;
+}
+
+/* Backdrop */
+.custom-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px);
+  z-index: 998;
+}
+
+/* pop animation */
+@keyframes popin {
+  0% { opacity: 0; transform: translate(50%, -42%); }
+  100% { opacity: 1; transform: translate(50%, -50%); }
+}
+
+/* status pill badge */
+.pill {
+  padding: 4px 10px;
+  border-radius: 25px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pill-success { background: #28a745; }
+.pill-pending { background: #ffc107; }
+
+.balance-cards .card {
+  border-radius: 14px;
+  transition: 0.2s;
+}
+
+.balance-cards .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.table-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e6e6;
+}
+
+.modal-box {
+  width: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  z-index: 999;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(3px);
+  z-index: 998;
+}
+

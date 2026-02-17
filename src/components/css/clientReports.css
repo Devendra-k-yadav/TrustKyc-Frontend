@@ -1,0 +1,61 @@
+.client-reports {
+  background: #f6f7f8;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.header input {
+  width: 260px;
+  padding: 8px 12px;
+}
+
+.filter-card,
+.result-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.run-btn {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.run-btn button {
+  background: #9ca3af;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+}
+
+.empty-box {
+  border: 2px dashed #d1d5db;
+  padding: 40px;
+  text-align: center;
+  color: #6b7280;
+}

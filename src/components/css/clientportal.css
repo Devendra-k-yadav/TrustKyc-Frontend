@@ -1,0 +1,128 @@
+/* =========================
+   Hover Card Effect
+========================= */
+.hover-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+
+.my-apis .card-title {
+  font-size: 1.1rem;
+}
+
+.my-apis .badge {
+  font-size: 0.85rem;
+  padding: 0.35em 0.65em;
+}
+
+
+.client-dashboard,
+.my-apis {
+  padding: 2rem 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.hover-card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.client-dashboard .card,
+.my-apis .card {
+  border-radius: 10px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.client-dashboard .card-body,
+.my-apis .card-body {
+  text-align: center;
+}
+
+
+.client-dashboard table,
+.my-apis table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.client-dashboard table th,
+.client-dashboard table td,
+.my-apis table th,
+.my-apis table td {
+  vertical-align: middle;
+}
+
+/* Table hover */
+.client-dashboard table-hover tbody tr:hover,
+.my-apis table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.45em 0.75em;
+  border-radius: 0.5rem;
+}
+
+
+.my-apis form .form-control {
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+
+.my-apis .card .btn-group-responsive {
+  display: flex;
+  flex-wrap: wrap; /* Wrap on small screens */
+  justify-content: center;
+  gap: 0.5rem; /* Space between buttons */
+  margin-top: 0.5rem;
+}
+
+.my-apis .card .btn-group-responsive .btn {
+  font-size: 0.75rem;      /* Smaller text */
+  padding: 0.25rem 0.5rem; /* Small padding */
+  min-width: 90px;         /* Minimum width */
+  white-space: nowrap;
+  flex: 1 1 auto;          /* Flexible width */
+}
+
+/* Modal input */
+.modal-body .form-control {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+
+
+
+@media (max-width: 768px) {
+  .my-apis .card .btn {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .my-apis .card .btn-group-responsive .btn {
+    flex: 1 1 45%; /* Wrap 2 buttons per row */
+    min-width: 0;
+  }
+}

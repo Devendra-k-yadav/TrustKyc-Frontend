@@ -1,0 +1,145 @@
+/* ================= SIDEBAR ================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  background-color: #0F172A; /* Dark Mode */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  transition: width 0.3s ease;
+}
+
+/* Collapsed Sidebar */
+.sidebar.collapsed {
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+/* ================= BRAND ================= */
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 64px;              /* fixed brand height */
+  padding: 0 6px 0 0;        /* ❌ NO left padding */
+  background-color: #f0f0f5;
+  border-bottom: 2px solid #FF7A00;
+  box-sizing: border-box;
+}
+
+
+/* ================= LOGO ================= */
+.sidebar-logo {
+  display: block;            /* 🔥 inline gap removed */
+  height: 100%;
+  width: 100%;               /* take full brand width */
+  max-width: none;           /* remove restriction */
+  object-fit: contain;
+  border-radius: 6px;
+  margin: 0;                 /* ❌ force remove margin */
+  padding: 0;                /* ❌ force remove padding */
+  flex: 1 1 auto;            /* 🔥 fill space */
+}
+
+.sidebar.collapsed .sidebar-logo {
+  max-height: 40px;
+  margin-right: 0;
+}
+
+/* ================= COLLAPSE BUTTON ================= */
+.collapse-btn {
+  position: absolute;        /* 🔥 MOST IMPORTANT */
+  top: 50%;
+  right: -14px;              /* sidebar ke bahar */
+  transform: translateY(-50%);
+  background-color: #6565e0;
+  border: 1px solid #FF7A00;
+  color: #FFFFFF;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+ z-index: 1200;
+}
+
+.collapse-btn:hover {
+  background-color: #FF7A00;
+  color: #0B2C4D;
+}
+
+/* ================= SIDEBAR MENU ================= */
+.sidebar-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: #d0d5dd;
+  border-radius: 4px;
+}
+
+/* ================= MENU LINKS ================= */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background-color: #0E5A2A; /* Deep Green hover */
+  color: #FF7A00;           /* Saffron text */
+}
+
+.sidebar-link.active {
+  background-color: #FF7A00; /* Saffron active */
+  color: #0B2C4D;            /* Navy text */
+  border-left: 3px solid #FF7A00;
+  padding-left: 9px;
+}
+
+/* Hide text when collapsed */
+.sidebar.collapsed .sidebar-link span {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+}
+
+/* ================= MAIN CONTENT OFFSET ================= */
+.main-content {
+  margin-left: 180px;
+  transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: 80px;
+}

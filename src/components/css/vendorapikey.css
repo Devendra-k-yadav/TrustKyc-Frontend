@@ -1,0 +1,388 @@
+
+:root{
+  --bg: #f7f8fa;
+  --muted: #6b7280;
+  --accent: #1665f2;
+  --card: #fff;
+  --shadow: 0 8px 24px rgba(2,6,23,0.06);
+}
+
+body {
+  background: var(--bg);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  color: #0f172a;
+  padding: 40px 0;
+  margin: 30px;
+}
+
+/* root containers */
+.vpk-root {
+  width: 100%;
+  min-height: 100vh;
+  padding: 28px 40px;
+  box-sizing: border-box;
+}
+
+.vpk-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* header */
+.vpk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.vpk-header h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.vpk-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+  box-shadow: 0 6px 20px rgba(22,101,242,0.16);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.vpk-add-btn svg {
+  transform: translateY(1px);
+}
+
+/* grid and card */
+.vpk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.vpk-card {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(2,6,23,0.04);
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+}
+
+/* top row of card */
+.vpk-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.vpk-vendor-name {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.vpk-base-url {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* actions */
+.vpk-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(2,6,23,0.03);
+}
+
+/* status */
+.vpk-status {
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 999px;
+}
+
+.vpk-active {
+  color: #059669;
+  background: rgba(16,185,129,0.08);
+}
+
+.vpk-inactive {
+  color: #dc2626;
+  background: rgba(239,68,68,0.06);
+}
+
+/* body */
+.vpk-card-body {
+  margin-top: 12px;
+  flex: 1;
+  color: #111827;
+  font-size: 14px;
+}
+
+.vpk-contact {
+  margin-bottom: 10px;
+  color: #374151;
+  font-size: 14px;
+}
+
+.vpk-keys-count {
+  color: #374151;
+  font-size: 13px;
+}
+
+/* footer */
+.vpk-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.link-muted {
+  color: var(--muted);
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* drawer overlay and panel */
+.vpk-drawer-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+}
+
+.vpk-overlay {
+  flex: 1;
+  background: rgba(2,6,23,0.24);
+}
+
+/* panel */
+.vpk-drawer-panel {
+  width: 420px;
+  background: #fff;
+  box-shadow: -12px 0 32px rgba(2,6,23,0.12);
+  border-left: 1px solid rgba(2,6,23,0.06);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* drawer head/body */
+.drawer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.drawer-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.drawer-body label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #111827;
+  font-size: 13px;
+}
+
+.drawer-body input[type="text"],
+.drawer-body input[type="date"],
+.drawer-body select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(2,6,23,0.06);
+  background: #fff;
+  font-size: 14px;
+}
+
+/* drawer action buttons */
+.drawer-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.vpk-save-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.vpk-cancel-btn {
+  background: transparent;
+  border: 1px solid rgba(2,6,23,0.06);
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+/* keys inside drawer */
+.keys-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.vpk-add-key-btn {
+  background: #10b981;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.keys-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* single key card */
+.key-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 8px 18px rgba(2,6,23,0.04);
+  border: 1px solid rgba(2,6,23,0.03);
+}
+
+.key-row-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.key-label {
+  font-weight: 700;
+}
+
+.key-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.small {
+  font-size: 13px;
+  color: #374151;
+}
+
+.tiny {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.key-value {
+  font-family: monospace;
+}
+
+/* nested key editor */
+.key-editor {
+  margin-top: 12px;
+  border-top: 1px dashed rgba(2,6,23,0.06);
+  padding-top: 12px;
+}
+
+.key-editor h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* assign list */
+.assign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.assign-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+
+/* responsive */
+@media (max-width: 980px) {
+  .vpk-drawer-panel {
+    width: 100%;
+  }
+
+  .vpk-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}

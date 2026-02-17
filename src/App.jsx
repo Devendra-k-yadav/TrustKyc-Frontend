@@ -1,0 +1,220 @@
+import React from "react"; 
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+
+/* Redux */
+import { useDispatch, useSelector } from "react-redux";
+
+import { initAuth } from "./features/auth/authSlice";
+
+/* Layout Components */
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import Protected from "./components/ProtectedRoute";
+
+/* Context Providers (ONLY non-migrated modules) */
+import { VendorApiKeysProvider } from "./context/VendorApiKeysContext";
+import { BalanceProvider } from "./context/BalanceContext";
+
+/* Admin Pages */
+import Dashboard from "./pages/admin/Dashboard";
+import VendorApiKeys from "./pages/admin/VendorApiKeys";
+import Users from "./pages/admin/Users";
+import ApiManagement from "./pages/admin/ApiManagement";
+import Pricing from "./pages/admin/Pricing";
+import Balance from "./pages/admin/Balance";
+import ClientPortal from "./pages/admin/ClientPortal";
+import Settings from "./pages/admin/Settings";
+import CreateProduct from "./pages/admin/CreateProduct";
+import AppManagement from "./pages/admin/AppManagement";
+/* Manager Pages */
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+
+/* Client Pages */
+import ClientDashboard from "./pages/client/ClientDashboard";
+import ClientProfile from "./pages/client/ClientProfile";
+import ClientAPIs from "./pages/client/ClientAPIs";
+import ClientUsage from "./pages/client/ClientUsage";
+import ClientApps from "./pages/client/ClientApps";
+import ClientProducts from "./pages/client/ClientProducts";
+import ClientWallet from "./pages/client/ClientWallet";
+import ClientReports from "./pages/client/ClientReports";
+import TrialCenter from "./pages/client/TrialCenter";
+import ClientAppDetails from "./pages/client/ClientAppDetails";
+
+import DocumentationPage from "./pages/client/documentation/DocumentationPage";
+
+
+/* Auth Pages */
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ChangePassword from "./pages/auth/ChangePassword";
+import OtpVerify from "./pages/auth/OtpVerify";
+import EmailVerify from "./pages/auth/EmailVerify";
+
+/* ================= AUTH INIT FIX ================= */
+
+const AuthInitializer = ({ children }) => {
+  const dispatch = useDispatch();
+  const loadingUser = useSelector((state) => state.auth.loadingUser);
+
+  useEffect(() => {
+    dispatch(initAuth());
+  }, [dispatch]);
+
+  if (loadingUser) {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
+
+  return children;
+};
+
+/* ================= Layout ================= */
+
+const Layout = () => {
+  const location = useLocation();
+  // 🔥 DOCS PAGE DETECTION
+  const isDocsPage = location.pathname.startsWith("/client/documentation");
+
+  const pageTitles = {
+    "/": "Admin Dashboard",
+    "/vendor": "Vendor & API Key Management",
+    "/user-management": "Users & Manager Management",
+    "/api-management": "API Management",
+    "/admin/apps": "App Management",
+    "/pricing": "Pricing Management",
+    "/balance": "Balance Management",
+    "/client-portal": "Client Portal Access",
+    "/settings": "Settings",
+    "/change-password": "Change Password",
+    "/admin/create-product": "Create Product",
+
+    "/client/dashboard": "Client Dashboard",
+    "/client/apis": "My APIs",
+    "/client/usage": "API Usage",
+    "/client/apps": "My Apps",
+    "/client/products": "Products",
+    "/client/wallet": "Wallet Balance",
+    "/client/reports": "Reports",
+    "/client/trial-center": "Trial Center",
+    "/client/profile": "My Profile",
+    "/client/documentation": "Documentation",
+    
+  };
+
+ let currentTitle = pageTitles[location.pathname] || "Admin Panel";
+
+// Client Apps → Details page
+if (location.pathname.startsWith("/client/apps/") && location.pathname !== "/client/apps") {
+  currentTitle = "App details";
+}
+
+  useEffect(() => {
+    document.title = currentTitle;
+  }, [currentTitle]);
+
+
+  
+  return (
+    <div className="d-flex">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
+
+      {/* 🔹 Hide main sidebar on Docs page */}
+      {!isDocsPage && <Sidebar />}
+
+      <div
+        className={`flex-grow-1 bg-light ${
+          isDocsPage ? "w-100" : "main-content"
+        }`}
+        style={{ minHeight: "100vh" }}
+      >
+        {!isDocsPage && <Navbar pageTitle={currentTitle} />}
+
+
+        <div className={isDocsPage ? "p-0 m-0" : "p-4"}>
+          <Routes>
+            {/* Admin */}
+            <Route path="/" element={<Protected allowedRoles={["admin"]}><Dashboard /></Protected>} />
+            <Route path="/vendor" element={<Protected allowedRoles={["admin"]}><VendorApiKeys /></Protected>} />
+            <Route path="/user-management" element={<Protected allowedRoles={["admin"]}><Users /></Protected>} />
+            <Route path="/api-management" element={<Protected allowedRoles={["admin"]}><ApiManagement /></Protected>} />
+            <Route path="/admin/apps" element={<Protected allowedRoles={["admin"]}><AppManagement /></Protected>} />
+            <Route path="/pricing" element={<Protected allowedRoles={["admin"]}><Pricing /></Protected>} />
+            <Route path="/balance" element={<Protected allowedRoles={["admin"]}><Balance /></Protected>} />
+            <Route path="/client-portal" element={<Protected allowedRoles={["admin"]}><ClientPortal /></Protected>} />
+            <Route path="/settings" element={<Protected allowedRoles={["admin"]}><Settings /></Protected>} />
+            <Route path="/admin/create-product" element={<Protected allowedRoles={["admin"]}><CreateProduct /></Protected>} />
+
+            {/* Manager */}
+            <Route
+              path="/manager/dashboard"
+              element={
+                <Protected allowedRoles={["MANAGER"]}>
+                  <ManagerDashboard />
+                </Protected>
+              }
+            />
+
+            {/* Shared */}
+            <Route
+              path="/change-password"
+              element={<Protected allowedRoles={["admin", "client"]}><ChangePassword /></Protected>}
+            />
+
+            {/* Client */}
+            <Route path="/client/dashboard" element={<Protected allowedRoles={["client"]}><ClientDashboard /></Protected>} />
+            <Route path="/client/apis" element={<Protected allowedRoles={["client"]}><ClientAPIs /></Protected>} />
+            <Route path="/client/usage" element={<Protected allowedRoles={["client"]}><ClientUsage /></Protected>} />
+            <Route path="/client/apps" element={<Protected allowedRoles={["client"]}><ClientApps /></Protected>} />
+            <Route path="/client/products" element={<Protected allowedRoles={["client"]}><ClientProducts /></Protected>} />
+            <Route path="/client/wallet" element={<Protected allowedRoles={["client"]}><ClientWallet /></Protected>} />
+            <Route path="/client/reports" element={<Protected allowedRoles={["client"]}><ClientReports /></Protected>} />
+            <Route path="/client/trial-center" element={<Protected allowedRoles={["client"]}><TrialCenter /></Protected>} />
+            <Route path="/client/profile" element={<Protected allowedRoles={["client"]}><ClientProfile /></Protected>} />
+            <Route path="/client/apps/:id" element={<Protected allowedRoles={["client"]}><ClientAppDetails /></Protected>} />
+            <Route path="/client/documentation" element={<Protected allowedRoles={["client"]}><DocumentationPage /></Protected>} />
+           
+          </Routes>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ================= MAIN APP ================= */
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AuthInitializer>
+        <VendorApiKeysProvider>
+            <BalanceProvider>
+              <Routes>
+                {/* Public */}
+                <Route path="/auth/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/auth/otp" element={<OtpVerify />} />
+                <Route path="/verify-email/:token" element={<EmailVerify />} />
+
+                {/* Protected App */}
+                <Route path="/*" element={<Layout />} />
+              </Routes>
+            </BalanceProvider>
+        </VendorApiKeysProvider>
+      </AuthInitializer>
+    </BrowserRouter>
+  );
+};
+
+export default App;
+

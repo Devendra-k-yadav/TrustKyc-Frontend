@@ -1,0 +1,244 @@
+:root {
+  --bg: #f8fafc;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --card-border: #e6e9ef;
+}
+
+/* root */
+.dash-root {
+  padding: 50px;
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: #0f172a;
+}
+
+.dash-title {
+  font-size: 22px;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+/* TOP 4 KPI CARDS */
+
+.kpi-row {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.kpi-card {
+  flex: 1;
+  background: #fff;
+  padding: 22px 26px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  transition: 0.25s ease;
+  cursor: pointer;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.kpi-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.kpi-card h2 {
+  margin-top: 6px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+}
+
+/* optional colored indicator */
+.kpi-card:nth-child(1){border-top:4px solid #2563eb;}
+.kpi-card:nth-child(2){border-top:4px solid #22c55e;}
+.kpi-card:nth-child(3){border-top:4px solid #f97316;}
+.kpi-card:nth-child(4){border-top:4px solid #e11d48;}
+
+
+/*  TOP ROW (chart + stats) */
+
+.dash-top-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
+
+.chart-column { flex: 1; }
+
+/* TABS */
+.tabs-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #0f172a;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.tab .tab-icon { color: var(--primary); }
+
+.tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.tab.active .tab-icon { color: #fff; }
+
+/* chart card */
+.big-chart-card {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+.card-title { margin:0 0 10px 0; font-size:17px; font-weight:700; }
+
+
+/* STATS RIGHT SIDE */
+.stats-column {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+}
+
+.stat-icon { color: var(--primary); }
+
+
+/* QUICK ACTION BUTTONS  */
+
+.quick-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 26px;
+  margin-bottom: 26px;
+}
+
+.qa-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.qa-btn:hover {
+  background: #1749bb;
+}
+
+
+
+/*RECENT / TOP CLIENT CARDS*/
+
+.recent-card {
+  margin-top: 22px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+}
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.refresh-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.refresh-btn:hover {
+  background: #1e40af;
+}
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+
+/* RESPONSIVE */
+/* 2 cards tablet */
+@media (max-width: 1200px) {
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:18px;
+  }
+}
+
+/* phone */
+@media (max-width: 992px) {
+  .dash-top-row { flex-direction: column; }
+  .stats-column { width: 100%; flex-direction: row; gap: 12px; }
+  .stat-box { flex: 1; }
+
+  .kpi-row { grid-template-columns: 1fr; }
+
+  .quick-actions { flex-wrap: wrap; }
+}
+
