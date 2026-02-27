@@ -17,7 +17,7 @@ import {
   fetchSubscribedProducts,    // ✅ ADD
 } from "../../features/products/productsSlice";
 
-const TABS = ["All", "Utility", "Identity", "Financial", "Fraud"];
+const TABS = ["All", "Utility", "Identity","Merchant", "Vehicle", "Financial", "Fraud"];
 
 export default function ClientProducts() {
   const dispatch = useDispatch();
@@ -56,7 +56,9 @@ export default function ClientProducts() {
     <div className="p-4" style={{ marginTop: "40px" }}>
       {/* HEADER */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h3 className="fw-bold">Services</h3>
+        <h3 className="fw-bold">Services <span className="badge bg-dark ms-2">
+    {products.length}
+  </span></h3>
         <Form.Control
           style={{ width: "260px" }}
           placeholder="Search product here"

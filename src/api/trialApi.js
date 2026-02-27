@@ -20,20 +20,21 @@ export const runPublicTrialApi = async (data) => {
   // ✅ OCR CASE (FormData)
   if (data instanceof FormData) {
     const res = await axios.post("/trials/public", data, {
-      // headers: {
-      //   "Content-Type": "multipart/form-data",
-      // },
+      headers: {
+        // 🔥 IMPORTANT: let browser set boundary automatically
+        "Content-Type": "multipart/form-data",
+      },
     });
-    return res.data; // 🔥 FIX
+    return res.data;
   }
 
-  // ✅ NORMAL APIs
+  // ✅ NORMAL APIs (JSON)
   const { trialId, payload } = data;
   const res = await axios.post("/trials/public", {
     trialId,
     payload,
   });
-  return res.data; // 🔥 FIX
+  return res.data;
 };
 
 

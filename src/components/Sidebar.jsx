@@ -32,12 +32,12 @@ const Sidebar = () => {
 
   // Admin Menus
   const adminMenus = [
-    { name: "Dashboard", path: "/", icon: <FaHome /> },
+    { name: "Dashboard", path: "/admin/dashboard", icon: <FaHome /> },
     { name: "Vendor & API Keys", path: "/vendor", icon: <FaKey /> },
     { name: "User & Manager", path: "/user-management", icon: <FaUsers /> },
     // { name: "API Management", path: "/api-management", icon: <FaServer /> },
     { name: "App Management", path: "/admin/apps", icon: <FaServer /> },
-    { name: "Create Product", path: "/admin/create-product", icon: <FaBoxOpen /> },
+    { name: "Create Product", path: "/create-product", icon: <FaBoxOpen /> },
     { name: "Pricing", path: "/pricing", icon: <FaCoins /> },
     { name: "Balance", path: "/balance", icon: <FaRupeeSign /> },
     { name: "Client Portal", path: "/client-portal", icon: <FaUserShield /> },
@@ -46,15 +46,15 @@ const Sidebar = () => {
 
   // Client Menus
   const clientMenus = [
-    { name: "Dashboard", path: "/client/dashboard", icon: <FaHome /> },
-    { name: "My APIs", path: "/client/apis", icon: <FaKey /> },
-    // { name: "Usage", path: "/client/usage", icon: <FaChartLine /> },
-    { name: "Apps", path: "/client/apps", icon: <FaServer /> },
-    { name: "Products", path: "/client/products", icon: <FaBoxOpen /> },
-    { name: "Wallet", path: "/client/wallet", icon: <FaWallet /> },
-    { name: "Reports", path: "/client/reports", icon: <FaChartBar /> },
-    { name: "Trial Center", path: "/client/trial-center", icon: <FaCoins /> },
-    { name: "Profile", path: "/client/profile", icon: <FaUser /> },
+    { name: "Dashboard", path: "/dashboard", icon: <FaHome /> },
+  { name: "My APIs", path: "/apis", icon: <FaKey /> },
+  // { name: "Usage", path: "/usage", icon: <FaChartLine /> },
+  { name: "Apps", path: "/apps", icon: <FaServer /> },
+  { name: "Products", path: "/products", icon: <FaBoxOpen /> },
+  { name: "Wallet", path: "/wallet", icon: <FaWallet /> },
+  { name: "Reports", path: "/reports", icon: <FaChartBar /> },
+  { name: "Trial Center", path: "/trial-center", icon: <FaCoins /> },
+  { name: "Profile", path: "/profile", icon: <FaUser /> },
   ];
 
   // Choose menus by role

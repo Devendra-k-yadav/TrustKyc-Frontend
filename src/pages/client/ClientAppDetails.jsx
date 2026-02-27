@@ -78,7 +78,7 @@ const ClientAppDetails = () => {
     return (
       <div className="text-center mt-5">
         <h6>App not found</h6>
-        <Button variant="dark" onClick={() => navigate("/client/apps")}>
+        <Button variant="dark" onClick={() => navigate("/apps")}>
           Back
         </Button>
       </div>
@@ -168,7 +168,7 @@ const ClientAppDetails = () => {
           <Button
             size="sm"
             variant="outline-primary"
-            onClick={() => navigate("/client/trial-center")}
+            onClick={() => navigate("/trial-center")}
           >
             Trial
           </Button>
@@ -207,7 +207,7 @@ const ClientAppDetails = () => {
           <Card>
             <Card.Body>
               <h6>App Details</h6>
-              {/* <p>
+              <p>
                 <b>Environment:</b>{" "}
                 <Badge bg={(app.environment || "Test") === "Live" ? "success" : "warning"}>
                   {app.environment || "Test"}
@@ -215,7 +215,7 @@ const ClientAppDetails = () => {
                 <Button size="sm" variant="link" className="ms-2" onClick={handleEnvironmentToggle}>
                   Change
                 </Button>
-              </p> */}
+              </p>
               <p><b>App ID:</b> {app._id || app.id}</p>
               <p><b>Name:</b> {app.name}</p>
               <p><b>Keys:</b> {app.keysList?.length || 0}</p>

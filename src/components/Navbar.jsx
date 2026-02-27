@@ -42,25 +42,31 @@ const Navbar = ({ pageTitle }) => {
       <div className="topbar-right">
         {/* 📘 Documentation Button */}
   <button
-    onClick={() => navigate("/client/documentation")}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 6,
-      marginRight: 14,
-      padding: "6px 10px",
-      borderRadius: 6,
-      border: "1px solid #e0e0e0",
-      background: "#f9f9ff",
-      color: "#1a1aa0ff",
-      cursor: "pointer",
-      fontSize: 14,
-      fontWeight: 500
-    }}
-  >
-    <HiOutlineDocumentText size={18} />
-    Documentation
-  </button>
+  onClick={() => {
+    if (role === "admin") {
+      navigate("/admin/documentation");
+    } else {
+      navigate("/documentation"); // client route
+    }
+  }}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    marginRight: 14,
+    padding: "6px 10px",
+    borderRadius: 6,
+    border: "1px solid #e0e0e0",
+    background: "#f9f9ff",
+    color: "#1a1aa0ff",
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500
+  }}
+>
+  <HiOutlineDocumentText size={18} />
+  Documentation
+</button>
 
   <span style={{ marginRight: 12, color: "#1a1aa0ff", fontWeight: 500 }}>
     {user?.email}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, sendOtpThunk } from "../../features/auth/authSlice";
 import { updateProfile } from "../../features/client/clientSlice"; // ✅ Redux action
@@ -20,15 +20,23 @@ export default function Login() {
   const [otpEmail, setOtpEmail] = useState("");
 
   /* ================= REDIRECT AFTER LOGIN ================= */
-  useEffect(() => {
-    if (user?.role === "ADMIN") {
-      navigate("/", { replace: true });
-    } else if (user?.role === "CLIENT") {
-      navigate("/client/dashboard", { replace: true });
-    } else if (user?.role === "MANAGER") {
-      navigate("/manager/dashboard", { replace: true });
-    }
-  }, [user, navigate]);
+  const location = useLocation();
+
+useEffect(() => {
+  // Redirect only after successful login
+  if (user && location.pathname !== "/login") return;
+
+  if (user?.role === "ADMIN") {
+    navigate("/admin/dashboard", { replace: true });
+  } 
+  else if (user?.role === "CLIENT") {
+    navigate("/dashboard", { replace: true });
+  } 
+  else if (user?.role === "MANAGER") {
+    navigate("/manager/dashboard", { replace: true });
+  }
+
+}, [user, navigate, location.pathname]);
 
   /* ================= PASSWORD LOGIN ================= */
   const handlePasswordLogin = async (e) => {
@@ -76,7 +84,7 @@ export default function Login() {
         style={{ width: "420px", borderRadius: "15px" }}
       >
         <h3 className="text-center mb-3 fw-bold text-primary">
-          Welcome Back
+          Welcome Back Trust_KYC
         </h3>
 
         <ul className="nav nav-tabs mb-3">

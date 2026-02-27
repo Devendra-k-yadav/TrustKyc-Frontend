@@ -125,7 +125,12 @@ const [selectedClient, setSelectedClient] = useState("");
     <div className="container-fluid py-4">
       {/* HEADER */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="fw-bold">Products</h4>
+  <h4 className="fw-bold">
+    Products
+    <span className="badge bg-dark ms-2">
+      {products.length}
+    </span>
+  </h4>
         <button
           className={`btn ${showForm ? "btn-danger" : "btn-primary"}`}
           onClick={() => setShowForm(!showForm)}
@@ -153,7 +158,7 @@ const [selectedClient, setSelectedClient] = useState("");
 
       {/* CATEGORY TABS */}
       <ul className="nav nav-tabs mb-3">
-        {["All", "Utility", "Identity", "Financial", "Fraud"].map(
+        {["All", "Utility", "Identity", "Merchant", "Vehicle", "Financial", "Fraud"].map(
           (tab) => (
             <li className="nav-item" key={tab}>
               <button
@@ -222,6 +227,8 @@ const [selectedClient, setSelectedClient] = useState("");
                 >
                   <option>Utility</option>
                   <option>Identity</option>
+                  <option>Merchant</option>
+                  <option>Vehicle</option>
                   <option>Financial</option>
                   <option>Fraud</option>
                 </select>

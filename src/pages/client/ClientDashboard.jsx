@@ -143,7 +143,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="container py-4">
-      <h3 className="fw-bold mb-4">Client Dashboard</h3>
+      <h3 className="fw-bold mb-4">Services</h3>
 
       {/* ================= TOP SECTION ================= */}
       <Row className="g-4 mb-4">
@@ -213,7 +213,7 @@ export default function ClientDashboard() {
       {/* ================= MANAGE APIS ================= */}
       <Card className="shadow-sm">
         <Card.Body>
-          <h5 className="fw-bold mb-3">Manage APIs</h5>
+          <h5 className="fw-bold mb-3">Manage Services</h5>
 
           <table className="table table-hover align-middle">
             <thead>

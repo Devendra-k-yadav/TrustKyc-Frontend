@@ -6,10 +6,10 @@ export const fetchTrialProducts = createAsyncThunk(
   "trialCenter/fetchTrials",
   async () => {
     const res = await trialCenterService.fetchTrials();
-    // ✅ Backend should already include client-wise creditsLeft
+
     return res.trials.map((t) => ({
       ...t,
-      creditsLeft: t.creditsLeft ?? t.trialCredits, // fallback just in case
+      creditsLeft: t.creditsLeft ?? t.trialCredits,
     }));
   }
 );
@@ -49,17 +49,33 @@ const trialCenterSlice = createSlice({
 
       // ---------------- RESTRICTED ----------------
       .addCase(runRestrictedTrial.fulfilled, (state, action) => {
-        const { trial, creditsLeft } = action.payload;
-        const idx = state.products.findIndex((p) => p._id === trial._id);
-        if (idx !== -1) state.products[idx].creditsLeft = creditsLeft;
+        const { trial, creditsLeft } = action.payload || {};
+
+        // ✅ SAFE GUARD
+        if (!trial || !trial._id) return;
+
+        const idx = state.products.findIndex(
+          (p) => p._id === trial._id
+        );
+
+        if (idx !== -1 && creditsLeft !== undefined) {
+          state.products[idx].creditsLeft = creditsLeft;
+        }
       })
 
       // ---------------- PUBLIC ----------------
       .addCase(runPublicTrial.fulfilled, (state, action) => {
-        const { trial, creditsLeft } = action.payload;
-        if (trial) {
-          const idx = state.products.findIndex((p) => p._id === trial._id);
-          if (idx !== -1) state.products[idx].creditsLeft = creditsLeft;
+        const { trial, creditsLeft } = action.payload || {};
+
+        // ✅ SAFE GUARD
+        if (!trial || !trial._id) return;
+
+        const idx = state.products.findIndex(
+          (p) => p._id === trial._id
+        );
+
+        if (idx !== -1 && creditsLeft !== undefined) {
+          state.products[idx].creditsLeft = creditsLeft;
         }
       });
   },

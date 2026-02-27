@@ -45,14 +45,13 @@ export const initAuth = createAsyncThunk(
 ===================================================== */
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async ({ email, password, role }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue }) => {
     try {
       const data = await register({
-        email,
-        password,
-        role,
-        name: email.split("@")[0],
-      });
+  email,
+  password,
+  name: email.split("@")[0],
+});
 
       if (data.accessToken) {
         attachAccessToken(data.accessToken);

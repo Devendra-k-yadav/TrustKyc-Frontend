@@ -1,5 +1,5 @@
 import React from "react"; 
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
@@ -59,10 +59,10 @@ import EmailVerify from "./pages/auth/EmailVerify";
 
 const AuthInitializer = ({ children }) => {
   const dispatch = useDispatch();
-  const loadingUser = useSelector((state) => state.auth.loadingUser);
+  const { user, loadingUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(initAuth());
+    dispatch(initAuth());   // Always check backend auth
   }, [dispatch]);
 
   if (loadingUser) {
@@ -71,16 +71,15 @@ const AuthInitializer = ({ children }) => {
 
   return children;
 };
-
 /* ================= Layout ================= */
 
 const Layout = () => {
   const location = useLocation();
   // 🔥 DOCS PAGE DETECTION
-  const isDocsPage = location.pathname.startsWith("/client/documentation");
+  const isDocsPage = location.pathname.startsWith("/documentation");
 
   const pageTitles = {
-    "/": "Admin Dashboard",
+    "/admin/dashboard": "Dashboard",
     "/vendor": "Vendor & API Key Management",
     "/user-management": "Users & Manager Management",
     "/api-management": "API Management",
@@ -90,25 +89,25 @@ const Layout = () => {
     "/client-portal": "Client Portal Access",
     "/settings": "Settings",
     "/change-password": "Change Password",
-    "/admin/create-product": "Create Product",
+    "/create-product": "Create Product",
 
-    "/client/dashboard": "Client Dashboard",
-    "/client/apis": "My APIs",
-    "/client/usage": "API Usage",
-    "/client/apps": "My Apps",
-    "/client/products": "Products",
-    "/client/wallet": "Wallet Balance",
-    "/client/reports": "Reports",
-    "/client/trial-center": "Trial Center",
-    "/client/profile": "My Profile",
-    "/client/documentation": "Documentation",
+    "/dashboard": "Dashboard",
+"/apis": "My APIs",
+"/usage": "API Usage",
+"/apps": "My Apps",
+"/products": "Products",
+"/wallet": "Wallet Balance",
+"/reports": "Reports",
+"/trial-center": "Trial Center",
+"/profile": "My Profile",
+"/documentation": "Documentation",
     
   };
 
  let currentTitle = pageTitles[location.pathname] || "Admin Panel";
 
 // Client Apps → Details page
-if (location.pathname.startsWith("/client/apps/") && location.pathname !== "/client/apps") {
+if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
   currentTitle = "App details";
 }
 
@@ -143,7 +142,7 @@ if (location.pathname.startsWith("/client/apps/") && location.pathname !== "/cli
         <div className={isDocsPage ? "p-0 m-0" : "p-4"}>
           <Routes>
             {/* Admin */}
-            <Route path="/" element={<Protected allowedRoles={["admin"]}><Dashboard /></Protected>} />
+            <Route path="/admin/dashboard" element={<Protected allowedRoles={["admin"]}><Dashboard /></Protected>} />
             <Route path="/vendor" element={<Protected allowedRoles={["admin"]}><VendorApiKeys /></Protected>} />
             <Route path="/user-management" element={<Protected allowedRoles={["admin"]}><Users /></Protected>} />
             <Route path="/api-management" element={<Protected allowedRoles={["admin"]}><ApiManagement /></Protected>} />
@@ -152,7 +151,7 @@ if (location.pathname.startsWith("/client/apps/") && location.pathname !== "/cli
             <Route path="/balance" element={<Protected allowedRoles={["admin"]}><Balance /></Protected>} />
             <Route path="/client-portal" element={<Protected allowedRoles={["admin"]}><ClientPortal /></Protected>} />
             <Route path="/settings" element={<Protected allowedRoles={["admin"]}><Settings /></Protected>} />
-            <Route path="/admin/create-product" element={<Protected allowedRoles={["admin"]}><CreateProduct /></Protected>} />
+            <Route path="/create-product" element={<Protected allowedRoles={["admin"]}><CreateProduct /></Protected>} />
 
             {/* Manager */}
             <Route
@@ -171,17 +170,17 @@ if (location.pathname.startsWith("/client/apps/") && location.pathname !== "/cli
             />
 
             {/* Client */}
-            <Route path="/client/dashboard" element={<Protected allowedRoles={["client"]}><ClientDashboard /></Protected>} />
-            <Route path="/client/apis" element={<Protected allowedRoles={["client"]}><ClientAPIs /></Protected>} />
-            <Route path="/client/usage" element={<Protected allowedRoles={["client"]}><ClientUsage /></Protected>} />
-            <Route path="/client/apps" element={<Protected allowedRoles={["client"]}><ClientApps /></Protected>} />
-            <Route path="/client/products" element={<Protected allowedRoles={["client"]}><ClientProducts /></Protected>} />
-            <Route path="/client/wallet" element={<Protected allowedRoles={["client"]}><ClientWallet /></Protected>} />
-            <Route path="/client/reports" element={<Protected allowedRoles={["client"]}><ClientReports /></Protected>} />
-            <Route path="/client/trial-center" element={<Protected allowedRoles={["client"]}><TrialCenter /></Protected>} />
-            <Route path="/client/profile" element={<Protected allowedRoles={["client"]}><ClientProfile /></Protected>} />
-            <Route path="/client/apps/:id" element={<Protected allowedRoles={["client"]}><ClientAppDetails /></Protected>} />
-            <Route path="/client/documentation" element={<Protected allowedRoles={["client"]}><DocumentationPage /></Protected>} />
+            <Route path="/dashboard" element={<Protected allowedRoles={["client"]}><ClientDashboard /></Protected>} />
+<Route path="/apis" element={<Protected allowedRoles={["client"]}><ClientAPIs /></Protected>} />
+<Route path="/usage" element={<Protected allowedRoles={["client"]}><ClientUsage /></Protected>} />
+<Route path="/apps" element={<Protected allowedRoles={["client"]}><ClientApps /></Protected>} />
+<Route path="/products" element={<Protected allowedRoles={["client"]}><ClientProducts /></Protected>} />
+<Route path="/wallet" element={<Protected allowedRoles={["client"]}><ClientWallet /></Protected>} />
+<Route path="/reports" element={<Protected allowedRoles={["client"]}><ClientReports /></Protected>} />
+<Route path="/trial-center" element={<Protected allowedRoles={["client"]}><TrialCenter /></Protected>} />
+<Route path="/profile" element={<Protected allowedRoles={["client"]}><ClientProfile /></Protected>} />
+<Route path="/apps/:id" element={<Protected allowedRoles={["client"]}><ClientAppDetails /></Protected>} />
+<Route path="/documentation" element={<Protected allowedRoles={["client", "admin"]}><DocumentationPage /></Protected>} />
            
           </Routes>
         </div>
@@ -199,6 +198,8 @@ const App = () => {
         <VendorApiKeysProvider>
             <BalanceProvider>
               <Routes>
+                {/* Default Route -> Login */}
+  <Route path="/" element={<Navigate to="/login" replace />} />
                 {/* Public */}
                 <Route path="/auth/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

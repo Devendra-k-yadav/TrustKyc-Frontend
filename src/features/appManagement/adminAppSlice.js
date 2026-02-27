@@ -10,9 +10,15 @@ import { toast } from "react-toastify";
 
 export const fetchAdminApps = createAsyncThunk(
   "adminApps/fetchAll",
-  async (_, { rejectWithValue }) => {
+  async (clientId, { rejectWithValue }) => {
     try {
-      return await clientAppsService.getApps();
+      const res = await API.get(`/admin/clients/${clientId}/apps`);
+
+      if (Array.isArray(res.data)) return res.data;
+      if (Array.isArray(res.data?.data)) return res.data.data;
+
+      return [];
+
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }

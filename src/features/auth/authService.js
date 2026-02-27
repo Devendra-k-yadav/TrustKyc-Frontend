@@ -3,8 +3,18 @@ import API from "../../api/axios";
 /* ================= AUTH SERVICES ================= */
 
 export const refreshToken = async () => {
-  const res = await API.post("/auth/refresh-token");
-  return res.data;
+  try {
+    const res = await API.post("/auth/refresh-token");
+    return res.data;
+  } catch (err) {
+
+    // 👇 User logged out ya session expire
+    if (err.response?.status === 401) {
+      return null;
+    }
+
+    throw err;
+  }
 };
 
 

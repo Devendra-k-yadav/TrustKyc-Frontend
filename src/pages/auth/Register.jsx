@@ -9,10 +9,11 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "CLIENT",
+    role: "CLIENT", // 🔥 default & hidden
   });
 
   const handleChange = (e) => {
@@ -28,9 +29,10 @@ const Register = () => {
 
     const res = await dispatch(
       registerUser({
+        name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: formData.role,
+        role: "CLIENT", // 🔒 force client role
       })
     );
 
@@ -46,28 +48,55 @@ const Register = () => {
           <h3 className="mb-4 text-center">Register</h3>
 
           <Form onSubmit={handleSubmit}>
+            {/* NAME */}
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            {/* EMAIL */}
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
 
+            {/* PASSWORD */}
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" name="password" value={formData.password} onChange={handleChange} required />
+              <Form.Control
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
 
+            {/* CONFIRM PASSWORD */}
             <Form.Group className="mb-3">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+              <Form.Control
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Role</Form.Label>
-              <Form.Select name="role" value={formData.role} onChange={handleChange}>
-                <option value="CLIENT">CLIENT</option>
-                <option value="ADMIN">ADMIN</option>
-              </Form.Select>
-            </Form.Group>
+            {/* 🔒 ROLE NOT SHOWN IN UI */}
 
             <Link to="/login">Already have an account?</Link>
 

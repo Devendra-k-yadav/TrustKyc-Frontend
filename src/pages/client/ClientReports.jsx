@@ -1,242 +1,595 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   setFilter,
   clearAll,
   runReport,
   fetchMetaData,
   fetchAppProducts,
+  setPage,
 } from "../../features/clientReports/clientReportsSlice";
 
 const ClientReports = () => {
+
   const dispatch = useDispatch();
 
   const {
-    filters,
-    filteredReports,
-    products,
-    apps,
-    statusList,
-    durations,
-    loading,
-  } = useSelector((state) => state.clientReports);
+    filters = {},
+    reports = [],
+    products = [],
+    apps = [],
+    statusList = [],
+    durations = [],
+    pagination = {},
+    loading = false,
+    stats = {
+      success: 0,
+      failed: 0,
+      total: 0,
+    },
+  } = useSelector((state) => state.clientReports || {});
 
+
+
+  // Load metadata only
   useEffect(() => {
     dispatch(fetchMetaData());
   }, [dispatch]);
 
+
+
+  // Run report manually only
+  const run = () => {
+
+    if (!filters.appId || !filters.product) {
+      alert("Please select App and Product first");
+      return;
+    }
+
+    dispatch(setPage(1));
+    dispatch(runReport());
+
+  };
+
+
+
+  const handlePageChange = (page) => {
+
+    dispatch(setPage(page));
+
+    dispatch(runReport());
+
+  };
+
+
+
+  const formatDate = (date) => {
+
+    if (!date) return "-";
+
+    return new Date(date).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  };
+
+
+
   return (
-    <div className="container-fluid bg-light min-vh-100 p-4">
-      {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4 className="fw-semibold mb-0">Client Reports</h4>
-        <input
-          type="text"
-          className="form-control w-25"
-          placeholder="Search by Client ID..."
-          value={filters.clientId}
-          onChange={(e) =>
-            dispatch(setFilter({ name: "clientId", value: e.target.value }))
-          }
-        />
+
+    <div className="container-fluid p-3 p-md-4">
+
+      {/* HEADER */}
+
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+
+        <h4 className="fw-semibold mb-2 mb-md-0">
+          Reports
+        </h4>
+
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => dispatch(clearAll())}
+        >
+          Clear All
+        </button>
+
       </div>
 
-      {/* Filters */}
-      <div className="card shadow-sm mb-4">
-        <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h6 className="fw-semibold mb-0">Filter By</h6>
-            <button
-              className="btn btn-link text-success p-0"
-              onClick={() => dispatch(clearAll())}
-            >
-              Clear all
-            </button>
-          </div>
 
-          <div className="row g-4">
-            {/* App */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">App Name</label>
+
+      {/* FILTER CARD */}
+
+      <div className="card shadow-sm mb-3">
+
+        <div className="card-body">
+
+          <div className="row g-3">
+
+            {/* APP */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                App
+              </label>
+
               <select
                 className="form-select"
-                value={filters.appId}
+                value={filters.appId || ""}
                 onChange={(e) => {
+
                   const appId = e.target.value;
-                  dispatch(setFilter({ name: "appId", value: appId }));
-                  dispatch(setFilter({ name: "product", value: "" }));
-                  if (appId) dispatch(fetchAppProducts(appId));
+
+                  dispatch(setFilter({
+                    name: "appId",
+                    value: appId,
+                  }));
+
+                  dispatch(setFilter({
+                    name: "product",
+                    value: "",
+                  }));
+
+                  if (appId)
+                    dispatch(fetchAppProducts(appId));
+
                 }}
               >
-                <option value="">Select Option</option>
+
+                <option value="">
+                  Select App
+                </option>
+
                 {apps.map((a) => (
-                  <option key={a._id} value={a._id}>
+
+                  <option
+                    key={a._id}
+                    value={a._id}
+                  >
                     {a.name}
                   </option>
+
                 ))}
+
               </select>
+
             </div>
 
-            {/* Products */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">Products</label>
+
+
+            {/* PRODUCT */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                Product
+              </label>
+
               <select
                 className="form-select"
-                value={filters.product}
-                onChange={(e) =>
-                  dispatch(
-                    setFilter({ name: "product", value: e.target.value })
-                  )
-                }
+                value={filters.product || ""}
                 disabled={!filters.appId}
+                onChange={(e) =>
+                  dispatch(setFilter({
+                    name: "product",
+                    value: e.target.value,
+                  }))
+                }
               >
-                <option value="">Select Option</option>
+
+                <option value="">
+                  Select Product
+                </option>
+
                 {products.map((p) => (
-                  <option key={p._id} value={p._id}>
+
+                  <option
+                    key={p._id}
+                    value={p._id}
+                  >
                     {p.name}
                   </option>
+
                 ))}
+
               </select>
+
             </div>
 
-            {/* Status */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">Status</label>
+
+
+            {/* STATUS */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                Status
+              </label>
+
               <select
                 className="form-select"
-                value={filters.status}
+                value={filters.status || ""}
                 onChange={(e) =>
-                  dispatch(setFilter({ name: "status", value: e.target.value }))
+                  dispatch(setFilter({
+                    name: "status",
+                    value: e.target.value,
+                  }))
                 }
               >
-                <option value="">Select Option</option>
+
+                <option value="">
+                  All
+                </option>
+
                 {statusList.map((s) => (
-                  <option key={s} value={s}>
+
+                  <option key={s}>
                     {s}
                   </option>
+
                 ))}
+
               </select>
+
             </div>
 
-            {/* Duration */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">
-                Duration <span className="text-danger">*</span>
+
+
+            {/* ENVIRONMENT */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                Environment
               </label>
+
               <select
                 className="form-select"
-                value={filters.duration}
+                value={filters.environment || ""}
                 onChange={(e) =>
-                  dispatch(
-                    setFilter({ name: "duration", value: e.target.value })
-                  )
+                  dispatch(setFilter({
+                    name: "environment",
+                    value: e.target.value,
+                  }))
                 }
               >
-                <option value="">Select Duration</option>
+
+                <option value="">
+                  All
+                </option>
+
+                <option>
+                  Live
+                </option>
+
+                <option>
+                  Test
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            {/* CHARGE TYPE */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                Charge Type
+              </label>
+
+              <select
+                className="form-select"
+                value={filters.chargeType || ""}
+                onChange={(e) =>
+                  dispatch(setFilter({
+                    name: "chargeType",
+                    value: e.target.value,
+                  }))
+                }
+              >
+
+                <option value="">
+                  All
+                </option>
+
+                <option>
+                  Billable
+                </option>
+
+                <option>
+                  Non-Billable
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            {/* DURATION */}
+
+            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+
+              <label className="form-label">
+                Duration
+              </label>
+
+              <select
+                className="form-select"
+                value={filters.duration || ""}
+                onChange={(e) =>
+                  dispatch(setFilter({
+                    name: "duration",
+                    value: e.target.value,
+                  }))
+                }
+              >
+
+                <option value="">
+                  Select
+                </option>
+
                 {durations.map((d) => (
-                  <option key={d} value={d}>
+
+                  <option key={d}>
                     {d}
                   </option>
+
                 ))}
+
               </select>
+
             </div>
 
-            {/* Charge Type */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">Charge type</label>
-              <div className="d-flex gap-4 mt-2">
-                {["Billable", "Non-Billable"].map((type) => (
-                  <div className="form-check" key={type}>
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="chargeType"
-                      checked={filters.chargeType === type}
-                      onChange={() =>
-                        dispatch(
-                          setFilter({ name: "chargeType", value: type })
-                        )
-                      }
-                    />
-                    <label className="form-check-label">{type}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Environment */}
-            <div className="col-md-4">
-              <label className="form-label fw-medium">Environment</label>
-              <div className="d-flex gap-4 mt-2">
-                {["Test", "Live"].map((env) => (
-                  <div className="form-check" key={env}>
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="environment"
-                      checked={filters.environment === env}
-                      onChange={() =>
-                        dispatch(
-                          setFilter({ name: "environment", value: env })
-                        )
-                      }
-                    />
-                    <label className="form-check-label">{env}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          <div className="text-end mt-4">
+
+
+          {/* RUN BUTTON */}
+
+          <div className="text-end mt-3">
+
             <button
-              className="btn btn-secondary px-4"
-              onClick={() => dispatch(runReport())}
-              disabled={loading || !filters.duration}
+              className="btn btn-primary px-4"
+              onClick={run}
+              disabled={
+                loading ||
+                !filters.appId ||
+                !filters.product
+              }
             >
-              {loading ? "Loading..." : "Run Report"}
+
+              {loading
+                ? "Running..."
+                : "Run Report"}
+
             </button>
+
           </div>
+
         </div>
+
       </div>
 
-      {/* Result */}
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <h6 className="fw-semibold mb-3">Result Set</h6>
 
-          {filteredReports.length === 0 ? (
-            <div className="border border-dashed rounded py-5 text-center text-muted">
-              No reports found for selected filters.
+
+      {/* STATS */}
+
+      <div className="row mb-3 g-3">
+
+        <div className="col-md-4">
+
+          <div className="card text-center shadow-sm">
+
+            <div className="card-body">
+
+              <h6>Total</h6>
+
+              <h4>
+                {stats.total || 0}
+              </h4>
+
             </div>
-          ) : (
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  <th>Client ID</th>
-                  <th>Product</th>
-                  <th>App</th>
-                  <th>Status</th>
-                  <th>Env</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReports.map((r) => (
-                  <tr key={r._id}>
-                    <td>{r.clientId}</td>
-                    <td>{r.productId?.name}</td>
-                    <td>{r.appId?.name}</td>
-                    <td>{r.status}</td>
-                    <td>{r.environment}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+
+          </div>
+
         </div>
+
+
+
+        <div className="col-md-4">
+
+          <div className="card text-center shadow-sm">
+
+            <div className="card-body text-success">
+
+              <h6>Success</h6>
+
+              <h4>
+                {stats.success || 0}
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div className="col-md-4">
+
+          <div className="card text-center shadow-sm">
+
+            <div className="card-body text-danger">
+
+              <h6>Failed</h6>
+
+              <h4>
+                {stats.failed || 0}
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
+
+
+
+      {/* TABLE */}
+
+      <div className="card shadow-sm">
+
+        <div className="table-responsive">
+
+          <table className="table table-hover mb-0">
+
+            <thead className="table-light">
+
+              <tr>
+
+                <th>Product</th>
+
+                <th>Status</th>
+
+                <th>Environment</th>
+
+                <th>Charge Type</th>
+
+                <th>Date</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {!filters.appId || !filters.product ? (
+
+                <tr>
+
+                  <td colSpan="5" className="text-center py-4 text-muted">
+
+                    Select App and Product to view report
+
+                  </td>
+
+                </tr>
+
+              ) : reports.length === 0 ? (
+
+                <tr>
+
+                  <td colSpan="5" className="text-center py-4">
+
+                    No Data Found
+
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                reports.map((r) => (
+
+                  <tr key={r._id}>
+
+                    <td>
+                      {r.productId?.name || "-"}
+                    </td>
+
+                    <td>
+                      {r.status}
+                    </td>
+
+                    <td>
+                      {r.environment}
+                    </td>
+
+                    <td>
+                      {r.chargeType}
+                    </td>
+
+                    <td>
+                      {formatDate(r.createdAt)}
+                    </td>
+
+                  </tr>
+
+                ))
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+
+      {/* PAGINATION */}
+
+      {pagination?.pages > 1 && (
+
+        <div className="d-flex justify-content-center mt-3">
+
+          <nav>
+
+            <ul className="pagination">
+
+              {[...Array(pagination.pages)].map((_, i) => (
+
+                <li
+                  key={i}
+                  className={`page-item ${
+                    pagination.page === i + 1
+                      ? "active"
+                      : ""
+                  }`}
+                >
+
+                  <button
+                    className="page-link"
+                    onClick={() =>
+                      handlePageChange(i + 1)
+                    }
+                  >
+
+                    {i + 1}
+
+                  </button>
+
+                </li>
+
+              ))}
+
+            </ul>
+
+          </nav>
+
+        </div>
+
+      )}
+
     </div>
+
   );
+
 };
 
 export default ClientReports;

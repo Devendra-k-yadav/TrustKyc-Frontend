@@ -56,15 +56,15 @@ const clientAppProducts =
  
 
   const [activeTab, setActiveTab] = useState("keys"); // tabs: keys / apis / info
- const [showManageProducts, setShowManageProducts] = useState(false);
+
 const [selectedProducts, setSelectedProducts] = useState([]);
+const [selectedClientForApps, setSelectedClientForApps] = useState("");
 
   useEffect(() => {
-    dispatch(fetchAdminApps());
-  }, [dispatch]);
-
-  
-
+  if (selectedClientForApps) {
+    dispatch(fetchAdminApps(selectedClientForApps));
+  }
+}, [selectedClientForApps, dispatch]);
 
 useEffect(() => {
   dispatch(fetchAdminClients());
@@ -81,11 +81,39 @@ useEffect(() => {
   
 
   /* ===== Handlers ===== */
-  const openDetails = (id) => {
-    dispatch(fetchAdminAppById(id));
+  const openDetails = async (id) => {
+  try {
+    // 1️⃣ Fetch app details
+    await dispatch(fetchAdminAppById(id)).unwrap();
+
+    // 2️⃣ Switch to details view
     setView("details");
-    setActiveTab("keys");
-  };
+
+    // 3️⃣ Open APIs tab directly
+    setActiveTab("apis");
+
+    // 4️⃣ Auto select client
+    const clientId = selectedClientForApps;
+
+    if (clientId) {
+
+      setSelectedClientId(clientId);
+
+      // 5️⃣ Fetch subscribed products
+      dispatch(fetchClientSubscribedProductsAdmin(clientId));
+
+      // 6️⃣ Fetch already assigned products
+      dispatch(fetchClientAppProducts({
+        appId: id,
+        clientId: clientId,
+      }));
+
+    }
+
+  } catch (err) {
+    toast.error("Failed to open app details");
+  }
+};
 
   const backToList = () => {
     dispatch(clearSelectedApp());
@@ -94,7 +122,10 @@ useEffect(() => {
 
   const handleCreateApp = () => {
     if (!newAppName.trim()) return toast.error("Enter app name");
-    dispatch(createAdminApp({ name: newAppName }));
+    dispatch(createAdminApp({
+  name: newAppName,
+  clientId: selectedClientForApps
+}));
     setNewAppName("");
     toast.success("App created successfully!");
   };
@@ -212,7 +243,6 @@ const handleRemoveKey = async (keyId) => {
       })
     );
 
-    setShowManageProducts(false);
   } catch (err) {
     toast.error(err?.message || "Failed to assign products");
   }
@@ -224,76 +254,118 @@ const handleRemoveKey = async (keyId) => {
 
   /* ================= LIST VIEW ================= */
   if (view === "list") {
-    return (
-      <div className="container-fluid py-3">
-        <ToastContainer />
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h4>App Management</h4>
-          <div className="input-group w-auto">
-            <input
-              type="text"
-              className="form-control form-control-sm"
-              placeholder="New app name..."
-              value={newAppName}
-              onChange={(e) => setNewAppName(e.target.value)}
-            />
-            <button className="btn btn-primary btn-sm" onClick={handleCreateApp}>
-              Create
-            </button>
-          </div>
-        </div>
+  return (
+    <div className="container-fluid py-3">
+      <ToastContainer />
 
-        <div className="row">
-          {loading ? (
-            <div className="col-12 text-center py-5">Loading...</div>
-          ) : apps.length > 0 ? (
-            apps.map((app) => (
-              <div className="col-md-4 mb-3" key={app._id}>
-                <div className="card shadow-sm h-100">
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">{app.name}</h5>
-                    <p>
-                      Environment:{" "}
-                      <span
-                        className={`badge ${
-                          app.environment === "live"
-                            ? "bg-success"
-                            : "bg-warning text-dark"
-                        }`}
-                      >
-                        {app.environment.toUpperCase()}
-                      </span>
-                    </p>
-                    <div className="mt-auto d-flex justify-content-between">
-                      <button
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => openDetails(app._id)}
-                      >
-                        Manage
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => {
-                          if (window.confirm("Delete this app?")) {
-                            dispatch(deleteAdminApp(app._id));
-                            toast.success("App deleted successfully");
-                          }
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-12 text-center text-muted py-5">No apps found</div>
-          )}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4>App Management</h4>
+
+        <div className="input-group w-auto">
+          <input
+            type="text"
+            className="form-control form-control-sm"
+            placeholder="New app name..."
+            value={newAppName}
+            onChange={(e) =>
+              setNewAppName(e.target.value)
+            }
+          />
+
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleCreateApp}
+            disabled={!selectedClientForApps}
+          >
+            Create
+          </button>
         </div>
       </div>
-    );
-  }
+
+
+      {/* ✅ CLIENT SELECTOR */}
+      <div className="mb-3" style={{ maxWidth: 400 }}>
+        <label className="form-label fw-semibold">
+          Select Client
+        </label>
+
+        <select
+          className="form-select"
+          value={selectedClientForApps}
+          onChange={(e) =>
+            setSelectedClientForApps(e.target.value)
+          }
+        >
+          <option value="">
+            -- Select Client --
+          </option>
+
+          {clients.map((c) => (
+            <option key={c._id} value={c._id}>
+              {c.name} ({c.email})
+            </option>
+          ))}
+        </select>
+      </div>
+
+
+      <div className="row">
+        {!selectedClientForApps ? (
+          <div className="col-12 text-center py-5 text-muted">
+            Please select a client to view apps
+          </div>
+        ) : loading ? (
+          <div className="col-12 text-center py-5">
+            Loading...
+          </div>
+        ) : apps.length > 0 ? (
+          apps.map((app) => (
+            <div className="col-md-4 mb-3" key={app._id}>
+              <div className="card shadow-sm h-100">
+                <div className="card-body d-flex flex-column">
+                  <h5>{app.name}</h5>
+
+                  <p>
+                    Environment:
+                    <span className="badge bg-success ms-2">
+                      {app.environment}
+                    </span>
+                  </p>
+
+                  <div className="mt-auto d-flex justify-content-between">
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() =>
+                        openDetails(app._id)
+                      }
+                    >
+                      Manage
+                    </button>
+
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() =>
+                        dispatch(deleteAdminApp(app._id))
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-12 text-center text-muted py-5">
+            No apps found
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
 
   /* ================= DETAILS VIEW ================= */
   if (!selectedApp) return null;
@@ -415,180 +487,156 @@ const handleRemoveKey = async (keyId) => {
 
           {/* ===== APIs / PRODUCTS TAB ===== */}
 {activeTab === "apis" && (
-  <div>
-    <button
-      className="btn btn-outline-dark mb-3"
-      onClick={() => setShowManageProducts(true)}
-    >
-      Manage Products
-    </button>
+  <div className="card shadow-sm border-0">
+    <div className="card-body">
 
-    {selectedApp.appProducts?.length ? (
-      <ul className="list-group">
-        {selectedApp.appProducts.map((p) => (
-          <li key={p._id} className="list-group-item">
-            {p.name || p.productName}
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p className="text-muted">No products assigned</p>
-    )}
-  </div>
-)}
+      <h5 className="mb-3">Manage Products</h5>
 
-{showManageProducts && (
-  <>
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.4)",
-        zIndex: 1040,
-      }}
-      onClick={() => setShowManageProducts(false)}
-    />
+      <div className="row">
 
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1050,
-      }}
-    >
-      <div className="card shadow-lg" style={{ width: 760 }}>
-        <div className="card-body">
-          <h5 className="mb-3">Manage Products</h5>
+        {/* LEFT SIDE */}
+        <div className="col-md-6">
 
-          <div className="row">
-            <div className="col-md-6">
-                {/* ===== CLIENT DROPDOWN (ADDED) ===== */}
-<div className="mb-3">
-  <label className="form-label fw-semibold">
-    Select Client
-  </label>
-  <select
-    className="form-select"
-    value={selectedClientId}
-    onChange={(e) => {
-  const clientId = e.target.value;
+          {/* Client Select */}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">
+              Select Client
+            </label>
 
-  setSelectedClientId(clientId);
-  setSelectedProducts([]);
-  
-  if (clientId) {
-    dispatch(fetchClientSubscribedProductsAdmin(clientId));
-    dispatch(
-      fetchClientAppProducts({
-        appId: selectedApp._id,
-        clientId,
-      })
-    );
-  }
-}}
+            <select
+              className="form-select"
+              value={selectedClientId}
+              onChange={(e) => {
+                const clientId = e.target.value;
 
+                setSelectedClientId(clientId);
+                setSelectedProducts([]);
 
-  >
-    <option value="">-- Select Client --</option>
-    {clients.map((c) => (
-      <option key={c._id} value={c._id}>
-        {c.name} ({c.email})
-      </option>
-    ))}
-  </select>
-</div>
-              <h6 className="text-muted">Available Products</h6>
-              <div
-                    className="border rounded p-2"
-                    style={{
-                      maxHeight: "300px",
-                      overflowY: "auto",
-                    }}
-                    >
-                {selectedClientId && availableProducts.length ? (
-                    (Array.isArray(availableProducts) ? availableProducts : []).map((p) => (
+                if (clientId) {
+                  dispatch(fetchClientSubscribedProductsAdmin(clientId));
 
+                  dispatch(fetchClientAppProducts({
+                    appId: selectedApp._id,
+                    clientId,
+                  }));
+                }
+              }}
+            >
+              <option value="">-- Select Client --</option>
 
-                    <div
-                      key={p._id}
-                      className={`p-2 mb-2 rounded ${
-                        selectedProducts.includes(p._id)
-                          ? "bg-success text-white"
-                          : "bg-light"
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        setSelectedProducts((prev) =>
-                          prev.includes(p._id)
-                            ? prev.filter((x) => x !== p._id)
-                            : [...prev, p._id]
-                        )
-                      }
-                    >
-                      {p.name}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-muted text-center mb-0">
-                    No products available
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="col-md-6">
-              <h6 className="text-muted">Products Added to App</h6>
-              <div className="border rounded p-2">
-  {!selectedClientId ? (
-    <p className="text-muted text-center mb-0">
-      Products are assigned per client.<br />
-      Please select a client to view assigned products.
-    </p>
-  ) : clientAppProducts.length ? (
-    clientAppProducts.map((p) => (
-      <div
-        key={p._id}
-        className="p-2 mb-2 bg-primary text-white rounded"
-      >
-        {p.productId?.name}
-      </div>
-    ))
-  ) : (
-    <p className="text-muted text-center mb-0">
-      No product added
-    </p>
-  )}
-</div>
-
-
-
-
-            </div>
+              {clients.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name} ({c.email})
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="d-flex justify-content-end gap-2 mt-4">
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={() => setShowManageProducts(false)}
-            >
-              Cancel
-            </button>
-            <button
-             className="btn btn-dark btn-sm"
-             disabled={!selectedClientId || !selectedProducts.length}
-             onClick={handleAssignProducts}
-            >
-              Submit
-            </button>
 
+          {/* Available Products */}
+          <h6 className="text-muted">Available Products</h6>
+
+          <div
+            className="border rounded p-2"
+            style={{ maxHeight: 300, overflowY: "auto" }}
+          >
+            {!selectedClientId ? (
+              <p className="text-muted text-center">
+                Select client first
+              </p>
+            ) : availableProducts.length ? (
+              availableProducts.map((p) => (
+
+                <div
+                  key={p._id}
+                  className={`p-2 mb-2 rounded ${
+                    selectedProducts.includes(p._id)
+                      ? "bg-success text-white"
+                      : "bg-light"
+                  }`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    setSelectedProducts((prev) =>
+                      prev.includes(p._id)
+                        ? prev.filter((x) => x !== p._id)
+                        : [...prev, p._id]
+                    )
+                  }
+                >
+                  {p.name}
+                </div>
+
+              ))
+            ) : (
+              <p className="text-muted text-center">
+                No products available
+              </p>
+            )}
           </div>
+
         </div>
+
+
+        {/* RIGHT SIDE */}
+        <div className="col-md-6">
+
+          <h6 className="text-muted">
+            Products Added to App
+          </h6>
+
+          <div
+            className="border rounded p-2"
+            style={{ maxHeight: 300, overflowY: "auto" }}
+          >
+
+            {!selectedClientId ? (
+              <p className="text-muted text-center">
+                Select client to view products
+              </p>
+            ) : clientAppProducts.length ? (
+
+              clientAppProducts.map((p) => (
+
+                <div
+                  key={p._id}
+                  className="p-2 mb-2 bg-primary text-white rounded"
+                >
+                  {p.productId?.name}
+                </div>
+
+              ))
+
+            ) : (
+              <p className="text-muted text-center">
+                No products added
+              </p>
+            )}
+
+          </div>
+
+        </div>
+
       </div>
+
+
+      {/* Submit Button */}
+      <div className="text-end mt-3">
+
+        <button
+          className="btn btn-dark"
+          disabled={
+            !selectedClientId ||
+            !selectedProducts.length
+          }
+          onClick={handleAssignProducts}
+        >
+          Assign Products
+        </button>
+
+      </div>
+
     </div>
-  </>
+  </div>
 )}
 
 

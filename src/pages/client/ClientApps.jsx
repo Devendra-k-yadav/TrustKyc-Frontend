@@ -76,25 +76,20 @@ useEffect(() => {
           style={{ marginTop: "45px" }}
         >
           <h4>Apps</h4>
-          {/* <Button variant="dark" onClick={() => dispatch(openCreateModal())}>
+          <Button variant="dark" onClick={() => dispatch(openCreateModal())}>
             Create App
-          </Button> */}
+          </Button>
         </div>
 
         <Row>
           {apps.map((app) => {
             const appId = app._id || app.id;
 
-            // ✅ FINAL SERVICE COUNT LOGIC
-
-// const serviceCount =
-//   app.servicesCount ??
-//   app.services?.length ??
-//   0;
-            const clientServices =
-  clientAppProductsByClient?.[clientId?.toString()]?.[appId?.toString()] || [];
-
-const serviceCount = clientServices.length;
+            
+            const serviceCount =
+  app.servicesCount ??
+  clientAppProductsByClient?.[clientId?.toString()]?.[appId?.toString()]?.length ??
+  0;
 
 
 
@@ -143,20 +138,20 @@ const serviceCount = clientServices.length;
                           return;
                         }
                         dispatch(setSelectedApp({ ...app, id: appId }));
-                        navigate(`/client/apps/${appId}`);
+                        navigate(`/apps/${appId}`);
                       }}
                     >
                       View App
                     </Button>
 
-                    {/* <Button
+                    <Button
                       variant="outline-danger"
                       className="w-100 mt-2"
                       size="sm"
                       onClick={() => handleDeleteApp(appId)}
                     >
                       Delete App
-                    </Button> */}
+                    </Button>
                   </Card.Body>
                 </Card>
               </Col>

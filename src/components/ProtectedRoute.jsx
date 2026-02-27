@@ -23,8 +23,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
 
   // ❌ Role allowed नहीं है
   if (!allowedRoles.includes(role)) {
-    if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
-    if (role === "client") return <Navigate to="/client/dashboard" replace />;
+    if (role === "admin") return <Navigate to="/" replace />;
+    if (role === "client") return <Navigate to="/dashboard" replace />;
     if (role === "manager") return <Navigate to="/manager/dashboard" replace />;
 
     return <Navigate to="/login" replace />;
