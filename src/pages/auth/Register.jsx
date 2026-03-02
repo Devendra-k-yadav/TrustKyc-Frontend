@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { registerUser } from "../../features/auth/authSlice";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "CLIENT", // 🔥 default & hidden
   });
 
   const handleChange = (e) => {
@@ -24,20 +25,30 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      return alert("Password and confirm password do not match");
+      return toast.error("Passwords do not match");
     }
+
+    setLoading(true);
 
     const res = await dispatch(
       registerUser({
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: "CLIENT", // 🔒 force client role
+        role: "CLIENT",
       })
     );
 
+    setLoading(false);
+
     if (res.meta.requestStatus === "fulfilled") {
-      navigate("/login");
+      toast.success(
+        "Registration successful 🎉 Please verify your email before login"
+      );
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     }
   };
 
@@ -48,61 +59,33 @@ const Register = () => {
           <h3 className="mb-4 text-center">Register</h3>
 
           <Form onSubmit={handleSubmit}>
-            {/* NAME */}
             <Form.Group className="mb-3">
               <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+              <Form.Control name="name" value={formData.name} onChange={handleChange} required />
             </Form.Group>
 
-            {/* EMAIL */}
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+              <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
             </Form.Group>
 
-            {/* PASSWORD */}
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
+              <Form.Control type="password" name="password" value={formData.password} onChange={handleChange} required />
             </Form.Group>
 
-            {/* CONFIRM PASSWORD */}
             <Form.Group className="mb-3">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
+              <Form.Control type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
             </Form.Group>
 
-            {/* 🔒 ROLE NOT SHOWN IN UI */}
-
-            <Link to="/login">Already have an account?</Link>
-
-            <Button type="submit" className="w-100 mt-3">
-              Register
+            <Button type="submit" className="w-100 mt-3" disabled={loading}>
+              {loading ? <Spinner size="sm" /> : "Register"}
             </Button>
+
+            <Link to="/login" className="d-block text-center mt-3">
+              Already have an account?
+            </Link>
           </Form>
         </Card.Body>
       </Card>

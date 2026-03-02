@@ -1,3 +1,4 @@
+import { confirmToast } from "../../utils/confirmToast";
 import React, { useEffect, useState } from "react";
 import { Card, Button, Row, Col, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,27 +47,62 @@ useEffect(() => {
 }, [apps, clientId, dispatch]);
 
 
-  const handleAddApp = async () => {
-    if (!appName.trim()) return;
-    try {
-      await dispatch(createApp(appName)).unwrap();
-      setAppName("");
-      dispatch(closeCreateModal());
-      toast.success("App created successfully");
-    } catch (err) {
-      toast.error(err);
-    }
-  };
+  const handleAddApp = () => {
 
-  const handleDeleteApp = async (appId) => {
-    if (!window.confirm("Are you sure you want to delete this app?")) return;
-    try {
-      await dispatch(removeApp(appId)).unwrap();
-      toast.success("App deleted successfully");
-    } catch (err) {
-      toast.error(err);
+  if (!appName.trim())
+    return toast.error("Enter app name");
+
+  confirmToast(
+    `Create app "${appName}"?`,
+    async () => {
+
+      try {
+
+        await dispatch(createApp(appName)).unwrap();
+
+        setAppName("");
+
+        dispatch(closeCreateModal());
+
+        toast.success("App created successfully");
+
+      } catch (err) {
+
+        toast.error(
+          err?.message || "Failed to create app"
+        );
+
+      }
+
     }
-  };
+  );
+
+};
+
+  const handleDeleteApp = (appId) => {
+
+  confirmToast(
+    "Are you sure you want to delete this app?",
+    async () => {
+
+      try {
+
+        await dispatch(removeApp(appId)).unwrap();
+
+        toast.success("App deleted successfully");
+
+      } catch (err) {
+
+        toast.error(
+          err?.message || "Failed to delete app"
+        );
+
+      }
+
+    }
+  );
+
+};
 
   return (
     <>

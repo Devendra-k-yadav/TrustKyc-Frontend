@@ -119,14 +119,7 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
   
   return (
     <div className="d-flex">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-      />
-
+      
       {/* 🔹 Hide main sidebar on Docs page */}
       {!isDocsPage && <Sidebar />}
 
@@ -190,16 +183,25 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
 };
 
 /* ================= MAIN APP ================= */
-
 const App = () => {
   return (
-    <BrowserRouter>
-      <AuthInitializer>
-        <VendorApiKeysProvider>
+    <>
+      {/* ✅ GLOBAL TOAST CONTAINER */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
+
+      <BrowserRouter>
+        <AuthInitializer>
+          <VendorApiKeysProvider>
             <BalanceProvider>
               <Routes>
-                {/* Default Route -> Login */}
-  <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
+
                 {/* Public */}
                 <Route path="/auth/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
@@ -207,13 +209,14 @@ const App = () => {
                 <Route path="/auth/otp" element={<OtpVerify />} />
                 <Route path="/verify-email/:token" element={<EmailVerify />} />
 
-                {/* Protected App */}
+                {/* Protected */}
                 <Route path="/*" element={<Layout />} />
               </Routes>
             </BalanceProvider>
-        </VendorApiKeysProvider>
-      </AuthInitializer>
-    </BrowserRouter>
+          </VendorApiKeysProvider>
+        </AuthInitializer>
+      </BrowserRouter>
+    </>
   );
 };
 

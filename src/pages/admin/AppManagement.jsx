@@ -1,4 +1,4 @@
-
+import { confirmToast } from "../../utils/confirmToast";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BsToggleOn } from "react-icons/bs";
@@ -156,14 +156,61 @@ useEffect(() => {
 
 
   const handleDeleteApp = () => {
-    if (!selectedApp) return;
-    if (window.confirm("Are you sure to delete this app?")) {
-      dispatch(deleteAdminApp(selectedApp._id));
-      setView("list");
-      toast.success("App deleted successfully");
-    }
-  };
 
+  if (!selectedApp) return;
+
+  confirmToast(
+    "Are you sure you want to delete this app?",
+    async () => {
+
+      try {
+
+        await dispatch(deleteAdminApp(selectedApp._id)).unwrap();
+
+        toast.success("App deleted successfully");
+
+        setView("list");
+
+        if (selectedClientForApps) {
+          dispatch(fetchAdminApps(selectedClientForApps));
+        }
+
+      } catch (err) {
+
+        toast.error("Failed to delete app");
+
+      }
+
+    }
+  );
+
+};
+  const handleDeleteFromList = (appId) => {
+
+  confirmToast(
+    "Are you sure you want to delete this app?",
+    async () => {
+
+      try {
+
+        await dispatch(deleteAdminApp(appId)).unwrap();
+
+        toast.success("App deleted successfully");
+
+        if (selectedClientForApps) {
+          dispatch(fetchAdminApps(selectedClientForApps));
+        }
+
+      } catch (err) {
+
+        toast.error(err?.message || "Failed to delete app");
+
+      }
+
+    }
+  );
+
+};
   const handleAddKey = async () => {
   if (!newKey.trim()) return toast.error("Enter key value");
 
@@ -218,13 +265,14 @@ const handleRemoveKey = async (keyId) => {
   }
 };
 
+const handleAssignProducts = async () => {
 
-  const handleAssignProducts = async () => {
   if (!selectedClientId || !selectedApp?._id || !selectedProducts.length) {
     return toast.error("Missing required data");
   }
 
   try {
+
     const res = await dispatch(
       assignProductsToClientApp({
         appId: selectedApp._id,
@@ -233,9 +281,22 @@ const handleRemoveKey = async (keyId) => {
       })
     ).unwrap();
 
-    toast.success(res.message || "Products assigned");
+    // ✅ SHOW CORRECT TOAST
+    if (res.alreadyAssigned) {
 
-    // 🔥 IMPORTANT: refresh client-app products
+      toast.warning(
+        res.message || "Some products already assigned"
+      );
+
+    } else {
+
+      toast.success(
+        res.message || "Products assigned successfully"
+      );
+
+    }
+
+    // ✅ refresh assigned products list
     dispatch(
       fetchClientAppProducts({
         appId: selectedApp._id,
@@ -243,15 +304,18 @@ const handleRemoveKey = async (keyId) => {
       })
     );
 
+    // ✅ clear selection (optional but recommended)
+    setSelectedProducts([]);
+
   } catch (err) {
-    toast.error(err?.message || "Failed to assign products");
+
+    toast.error(
+      err?.message || "Failed to assign products"
+    );
+
   }
+
 };
-
-
-
-
-
   /* ================= LIST VIEW ================= */
   if (view === "list") {
   return (
@@ -343,13 +407,11 @@ const handleRemoveKey = async (keyId) => {
                     </button>
 
                     <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() =>
-                        dispatch(deleteAdminApp(app._id))
-                      }
-                    >
-                      Delete
-                    </button>
+    className="btn btn-sm btn-outline-danger"
+    onClick={() => handleDeleteFromList(app._id)}
+  >
+    Delete
+  </button>
                   </div>
 
                 </div>

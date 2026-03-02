@@ -16,9 +16,9 @@ export default function OtpVerify() {
 
   /* 🔁 Redirect after login */
   useEffect(() => {
-    if (user?.role === "ADMIN") navigate("/", { replace: true });
+    if (user?.role === "ADMIN") navigate("/admin/dashboard", { replace: true });
     else if (user?.role === "CLIENT")
-      navigate("/client/dashboard", { replace: true });
+      navigate("/dashboard", { replace: true });
     else if (user?.role === "MANAGER")
       navigate("/manager/dashboard", { replace: true });
   }, [user, navigate]);

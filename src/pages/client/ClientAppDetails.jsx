@@ -1,3 +1,4 @@
+import { confirmToast } from "../../utils/confirmToast";
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -100,33 +101,58 @@ const ClientAppDetails = () => {
     }
   };
 
-  const handleDeleteKey = async (keyId) => {
-    if (!window.confirm("Are you sure you want to delete this key?")) return;
-    try {
-      await dispatch(removeAppKey({ appId: app._id || app.id, keyId })).unwrap();
-      toast.success("Key deleted");
-    } catch (err) {
-      toast.error(err);
+  const handleDeleteKey = (keyId) => {
+
+  confirmToast(
+    "Delete this key?",
+    async () => {
+
+      try {
+
+        await dispatch(removeAppKey({
+          appId: app._id,
+          keyId
+        })).unwrap();
+
+        toast.success("Key deleted");
+
+      } catch (err) {
+
+        toast.error(err);
+
+      }
+
     }
-  };
+  );
 
-  const handleAssignProducts = async () => {
-  try {
-    const res = await dispatch(
-      assignProductsToApp({
-        appId: app._id || app.id,
-        products: selectedProducts,
-      })
-    ).unwrap();
+};
 
-    // sync frontend with backend
-    setSelectedProducts(res?.services?.length ? res.services : selectedProducts);
+  const handleAssignProducts = () => {
 
-    toast.success("Products assigned successfully");
-    setShowManageProducts(false);
-  } catch (err) {
-    toast.error(err || "Failed to assign products");
-  }
+  confirmToast(
+    "Added products for this app?",
+    async () => {
+
+      try {
+
+        await dispatch(assignProductsToApp({
+          appId: app._id,
+          products: selectedProducts
+        })).unwrap();
+
+        toast.success("Products added to app successfully");
+
+        setShowManageProducts(false);
+
+      } catch (err) {
+
+        toast.error(err);
+
+      }
+
+    }
+  );
+
 };
 
   const handleEnvironmentToggle = () => {

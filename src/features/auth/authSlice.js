@@ -57,7 +57,7 @@ export const registerUser = createAsyncThunk(
         attachAccessToken(data.accessToken);
       }
 
-      toast.success(data.message || "Registered successfully");
+    
       return data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Registration failed");
