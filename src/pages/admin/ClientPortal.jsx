@@ -9,7 +9,8 @@ const ClientPortal = () => {
 
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
-
+const [currentPage, setCurrentPage] = useState(1);
+const pageSize = 5; // per page clients (change as needed)
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,12 @@ const ClientPortal = () => {
     balance: "",
     limit: "",
   });
+const totalPages = Math.ceil(clients.length / pageSize);
 
+const paginatedClients = clients.slice(
+  (currentPage - 1) * pageSize,
+  currentPage * pageSize
+);
  // ================= ATTACH TOKEN =================
   useEffect(() => {
     if (accessToken) {
@@ -186,7 +192,7 @@ const ClientPortal = () => {
               <td colSpan="4">Loading...</td>
             </tr>
           ) : (
-            clients.map((c) => (
+            paginatedClients.map((c) => (
 
               <tr key={c._id}>
 
@@ -230,7 +236,45 @@ const ClientPortal = () => {
         </tbody>
 
       </table>
+          {totalPages > 1 && (
+  <nav className="mt-3">
+    <ul className="pagination justify-content-end">
 
+      <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => setCurrentPage(prev => prev - 1)}
+        >
+          Previous
+        </button>
+      </li>
+
+      {[...Array(totalPages)].map((_, i) => (
+        <li
+          key={i}
+          className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
+        >
+          <button
+            className="page-link"
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        </li>
+      ))}
+
+      <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => setCurrentPage(prev => prev + 1)}
+        >
+          Next
+        </button>
+      </li>
+
+    </ul>
+  </nav>
+)}
       {/* ================= ASSIGN MODAL ================= */}
 
       {showAssignModal && (
@@ -329,6 +373,7 @@ const ClientPortal = () => {
         </label>
         <input
           type="number"
+          min="0"
           className="form-control form-control-sm"
           style={{ fontSize: "13px" }}
           placeholder="Enter balance"
@@ -348,6 +393,7 @@ const ClientPortal = () => {
         </label>
         <input
           type="number"
+          min="0"
           className="form-control form-control-sm"
           style={{ fontSize: "13px" }}
           placeholder="Enter limit"

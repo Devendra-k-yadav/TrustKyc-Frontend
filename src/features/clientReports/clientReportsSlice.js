@@ -12,6 +12,13 @@ const buildPayload = (filters, pagination) => {
     limit: pagination.limit || 10,
   };
 
+  /* ==============================
+     EXISTING FILTERS
+  ============================== */
+
+  if (filters.appId)
+    payload.appId = filters.appId;
+
   if (filters.product)
     payload.productId = filters.product;
 
@@ -21,11 +28,21 @@ const buildPayload = (filters, pagination) => {
   if (filters.environment)
     payload.environment = filters.environment;
 
+  if (filters.chargeType)
+    payload.chargeType = filters.chargeType;
+
   if (filters.duration)
     payload.duration = filters.duration;
 
-  if (filters.chargeType)
-    payload.chargeType = filters.chargeType;
+  /* ==============================
+     NEW CUSTOM DATE FILTER
+  ============================== */
+
+  if (filters.startDate)
+    payload.startDate = filters.startDate;
+
+  if (filters.endDate)
+    payload.endDate = filters.endDate;
 
   console.log("FINAL REPORT PAYLOAD:", payload);
 
@@ -158,13 +175,15 @@ export const fetchAppProducts = createAsyncThunk(
 const initialState = {
 
   filters: {
-    product: "",
-    appId: "",
-    status: "",
-    duration: "",
-    chargeType: "",
-    environment: "",
-  },
+  product: "",
+  appId: "",
+  status: "",
+  duration: "",
+  chargeType: "",
+  environment: "",
+  startDate: "",
+  endDate: "",
+},
 
   reports: [],
 

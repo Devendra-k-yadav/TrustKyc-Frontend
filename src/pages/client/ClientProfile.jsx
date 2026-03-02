@@ -1,113 +1,110 @@
-import React, { useState } from "react";
-import { Card, Form, Button, Row, Col } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Card, Form, Button, Row, Col, Spinner, Badge } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { updateProfileThunk } from "../../features/auth/authSlice";
 
 const ClientProfile = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "Devendra yadav",
-    email: "client@example.com",
-    company: "ABC Technologies",
-    phone: "+91 9876543210",
-    password: "",
+    name: "",
+    phone: "",
   });
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        phone: user.phone || "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    
-    toast.success("Profile updated successfully!", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
+    const res = await dispatch(updateProfileThunk(formData));
 
-    setFormData({ ...formData, password: "" });
+    if (res.meta.requestStatus === "fulfilled") {
+      toast.success("Profile updated successfully");
+    }
+
+    setLoading(false);
   };
 
   return (
     <div className="dashboard-wrapper">
-     
       <Card className="shadow-sm border-0">
         <Card.Body>
-          <Form onSubmit={handleSubmit}>
+          <h5 className="mb-3">
+            Profile Information{" "}
+            {user?.isVerified ? (
+  <Badge bg="success">Email Verified</Badge>
+) : (
+  <Badge bg="warning">Email Not Verified</Badge>
+)}
+          </h5>
+
+          <Form onSubmit={handleProfileUpdate}>
             <Row className="mb-3">
               <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Full Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
+                <Form.Label>Full Name</Form.Label>
+                <Form.Control
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </Col>
+
               <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled
-                  />
-                </Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control value={user?.email} disabled />
               </Col>
             </Row>
 
             <Row className="mb-3">
               <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Company</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Phone</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
+                <Form.Label>Phone</Form.Label>
+                <Form.Control
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  pattern="[0-9]{10}"
+                />
               </Col>
             </Row>
 
+            <Button type="submit" disabled={loading}>
+              {loading ? <Spinner size="sm" /> : "Save Changes"}
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+
+      {/* 🔐 SECURITY */}
+      <Card className="mt-4 shadow-sm border-0">
+        <Card.Body>
+          <h5>Security</h5>
+          <Form>
             <Row>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>New Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Leave blank to keep existing"
-                  />
-                </Form.Group>
+              <Col md={4}>
+                <Form.Control type="password" placeholder="Current Password" />
+              </Col>
+              <Col md={4}>
+                <Form.Control type="password" placeholder="New Password" />
+              </Col>
+              <Col md={4}>
+                <Button variant="outline-danger">Update Password</Button>
               </Col>
             </Row>
-
-            <div className="mt-4 text-end">
-              <Button type="submit" variant="primary">
-                Save Changes
-              </Button>
-            </div>
           </Form>
         </Card.Body>
       </Card>

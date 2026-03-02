@@ -486,6 +486,7 @@ const saveMapping = async () => {
     <label>Priority</label>
     <input
       type="number"
+      min="0"
       value={mappingForm.priority}
       onChange={(e) =>
         setMappingForm({
@@ -500,6 +501,7 @@ const saveMapping = async () => {
     <label>Vendor Price</label>
     <input
       type="number"
+      min="0"
       value={mappingForm.vendor_price}
       onChange={(e) =>
         setMappingForm({

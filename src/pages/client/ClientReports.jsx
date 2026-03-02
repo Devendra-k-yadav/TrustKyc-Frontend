@@ -317,41 +317,126 @@ const ClientReports = () => {
 
             {/* DURATION */}
 
-            <div className="col-12 col-sm-6 col-md-4 col-lg-2">
+            {/* DATE FILTER */}
 
-              <label className="form-label">
-                Duration
-              </label>
+<div className="col-12 col-sm-6 col-md-4 col-lg-2">
 
-              <select
-                className="form-select"
-                value={filters.duration || ""}
-                onChange={(e) =>
-                  dispatch(setFilter({
-                    name: "duration",
-                    value: e.target.value,
-                  }))
-                }
-              >
+  <label className="form-label">
+    Duration
+  </label>
 
-                <option value="">
-                  Select
-                </option>
+  <select
+    className="form-select"
+    value={filters.duration || ""}
+    onChange={(e) => {
 
-                {durations.map((d) => (
+      const value = e.target.value;
 
-                  <option key={d}>
-                    {d}
-                  </option>
+      dispatch(setFilter({
+        name: "duration",
+        value,
+      }));
 
-                ))}
+      // Clear custom dates if preset selected
+      if (value !== "custom") {
 
-              </select>
+        dispatch(setFilter({
+          name: "startDate",
+          value: "",
+        }));
 
-            </div>
+        dispatch(setFilter({
+          name: "endDate",
+          value: "",
+        }));
+
+      }
+
+    }}
+  >
+
+    <option value="">
+      Select
+    </option>
+
+    <option value="today">
+      Today
+    </option>
+
+    <option value="yesterday">
+      Yesterday
+    </option>
+
+    <option value="7d">
+      Last 7 Days
+    </option>
+
+    <option value="30d">
+      Last 30 Days
+    </option>
+
+    <option value="90d">
+      Last 90 Days
+    </option>
+
+    <option value="custom">
+      Custom Range
+    </option>
+
+  </select>
+
+</div>
 
           </div>
+{/* CUSTOM DATE RANGE PICKER */}
 
+{filters.duration === "custom" && (
+
+  <div className="row g-3 mt-1">
+
+    <div className="col-12 col-sm-6 col-md-3">
+
+      <label className="form-label">
+        Start Date
+      </label>
+
+      <input
+        type="date"
+        className="form-control"
+        value={filters.startDate || ""}
+        onChange={(e) =>
+          dispatch(setFilter({
+            name: "startDate",
+            value: e.target.value,
+          }))
+        }
+      />
+
+    </div>
+
+    <div className="col-12 col-sm-6 col-md-3">
+
+      <label className="form-label">
+        End Date
+      </label>
+
+      <input
+        type="date"
+        className="form-control"
+        value={filters.endDate || ""}
+        onChange={(e) =>
+          dispatch(setFilter({
+            name: "endDate",
+            value: e.target.value,
+          }))
+        }
+      />
+
+    </div>
+
+  </div>
+
+)}
 
 
           {/* RUN BUTTON */}

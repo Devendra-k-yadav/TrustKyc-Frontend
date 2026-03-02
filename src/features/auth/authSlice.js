@@ -141,7 +141,20 @@ export const updatePasswordThunk = createAsyncThunk(
     }
   }
 );
-
+/* ================= PROFILE UPDATE ================= */
+export const updateProfileThunk = createAsyncThunk(
+  "auth/updateProfile",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const res = await API.put("/auth/me/update", payload);
+      toast.success("Profile updated successfully");
+      return res.data.user;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Profile update failed");
+      return rejectWithValue();
+    }
+  }
+);
 /* =====================================================
    FORGOT PASSWORD
 ===================================================== */
@@ -206,7 +219,9 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.accessToken = action.payload.accessToken;
       })
-
+      .addCase(updateProfileThunk.fulfilled, (state, action) => {
+  state.user = action.payload; // 🔥 sync redux user
+})
       /* LOGOUT */
       .addCase(logoutThunk.fulfilled, (state) => {
         state.user = null;

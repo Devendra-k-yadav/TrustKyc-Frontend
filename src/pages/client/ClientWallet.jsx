@@ -24,7 +24,7 @@ export default function ClientWallet() {
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
   const { wallet, vendors } = useSelector((state) => state.client);
-
+  
   /* ================= SAFE DEFAULTS ================= */
   const balance = wallet?.balance ?? 0;
   const transactions = Array.isArray(wallet?.transactions)
