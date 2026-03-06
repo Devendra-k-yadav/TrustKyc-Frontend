@@ -118,38 +118,7 @@ export const payVendorThunk = createAsyncThunk(
   }
 );
 
-// ASSIGN PRODUCT TO CLIENT
-export const assignProductThunk = createAsyncThunk(
-  "client/assignProduct",
-  async (data, thunkAPI) => {
-    try {
 
-      console.log("THUNK RECEIVED:", data);
-
-      const response =
-        await clientService.assignProductToClient(
-          {
-            clientId: data.clientId,
-            productId: data.productId,
-            balance: data.balance,
-            limit: data.limit,
-          },
-          data.token   // ✅ TOKEN SEPARATE
-        );
-
-      return response;
-
-    } catch (error) {
-
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Assign failed";
-
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
 
 /* ================= SLICE ================= */
 
@@ -199,17 +168,6 @@ const clientSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      .addCase(assignProductThunk.pending, (state) => {
-  state.loading = true;
-})
-.addCase(assignProductThunk.fulfilled, (state) => {
-  state.loading = false;
-})
-.addCase(assignProductThunk.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload;
-})
 
       /* ---------- Wallet ---------- */
       .addCase(getClientWallet.pending, (state) => {

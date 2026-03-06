@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API, { attachAccessToken } from "../../api/axios";
 import { useSelector, useDispatch } from "react-redux";
-import { assignProductThunk } from "../../features/client/clientSlice";
+import { assignProductToClient } from "../../features/adminClients/adminClientsSlice";
 import { toast } from "react-toastify";
 
 
@@ -112,51 +112,36 @@ const paginatedClients = clients.slice(
   // ================= ASSIGN PRODUCT =================
   const handleAssignProduct = async () => {
 
-    console.log("FINAL assignData:", assignData);
+  if (!assignData.clientId) {
+    toast.error("Client not selected");
+    return;
+  }
 
-    if (!assignData.clientId) {
-      toast.error("Client not selected");
-      return;
-    }
+  if (!assignData.productId) {
+    toast.error("Select product");
+    return;
+  }
 
-    if (!assignData.productId) {
-      toast.error("Select product");
-      return;
-    }
+  try {
 
-    try {
+    const payload = {
+      clientId: assignData.clientId,
+      productId: assignData.productId,
+      balance: Number(assignData.balance || 0),
+      limit: Number(assignData.limit || 0),
+      token: accessToken
+    };
 
-      const payload = {
-        clientId: assignData.clientId,
-        productId: assignData.productId,
-        balance: assignData.balance
-          ? Number(assignData.balance)
-          : 0,
-        limit: assignData.limit
-          ? Number(assignData.limit)
-          : 0,
-        token: accessToken,
-      };
+    const res = await dispatch(assignProductToClient(payload)).unwrap();
 
-      console.log("FINAL PAYLOAD:", payload);
+    toast.success(res?.message || "Product assigned successfully");
 
-      await dispatch(assignProductThunk(payload)).unwrap();
+    setShowAssignModal(false);
 
-      toast.success("Product assigned successfully");
-
-      setShowAssignModal(false);
-
-      setAssignData({
-        clientId: "",
-        productId: "",
-        balance: "",
-        limit: "",
-      });
-
-    } catch (err) {
-      toast.error(err || "Assignment failed");
-    }
-  };
+  } catch (err) {
+    toast.error(err || "Assignment failed");
+  }
+};
 
   // ================= DELETE =================
   const handleDelete = (clientId) => {
