@@ -19,6 +19,39 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../components/css/clientwallet.css";
+/* ================= PAGINATION HELPER ================= */
+const paginate = (data = [], page = 1, limit = 5) => {
+  const start = (page - 1) * limit;
+  const end = start + limit;
+  return {
+    data: data.slice(start, end),
+    totalPages: Math.ceil(data.length / limit) || 1,
+  };
+};
+/* ================= PAGINATION UI ================= */
+const PaginationControls = ({ page, totalPages, onChange }) => (
+  <div className="d-flex justify-content-end align-items-center gap-2 mt-2">
+    <Button
+      size="sm"
+      variant="outline-secondary"
+      disabled={page === 1}
+      onClick={() => onChange(page - 1)}
+    >
+      Prev
+    </Button>
+    <span className="small">
+      Page {page} / {totalPages}
+    </span>
+    <Button
+      size="sm"
+      variant="outline-secondary"
+      disabled={page === totalPages}
+      onClick={() => onChange(page + 1)}
+    >
+      Next
+    </Button>
+  </div>
+);
 
 export default function ClientWallet() {
   const dispatch = useDispatch();
@@ -33,6 +66,12 @@ export default function ClientWallet() {
   const rechargeRequests = Array.isArray(wallet?.rechargeRequests)
     ? wallet.rechargeRequests
     : [];
+    /* ================= PAGINATION STATE ================= */
+  const [txPage, setTxPage] = useState(1);
+  const [rechargePage, setRechargePage] = useState(1);
+  const [vendorPage, setVendorPage] = useState(1);
+  const limit = 5;
+
   /* ================================================= */
 
   useEffect(() => {
@@ -121,7 +160,10 @@ export default function ClientWallet() {
       (t.date && t.date.toLowerCase().includes(s))
     );
   });
-
+/* ================= PAGINATED DATA ================= */
+  const txPaginated = paginate(filteredTx, txPage, limit);
+  const rechargePaginated = paginate(rechargeRequests, rechargePage, limit);
+  const vendorPaginated = paginate(vendors, vendorPage, limit);
   /* ================= UI ================= */
 
   return (
@@ -129,7 +171,7 @@ export default function ClientWallet() {
       <ToastContainer position="top-right" autoClose={2200} />
 
       <h3 className="mb-4 text-primary">Wallet & Payments</h3>
-
+      
       <Row className="g-3 mb-4">
         <Col md={4}>
           <Card className="stat-card p-3">
@@ -220,7 +262,7 @@ export default function ClientWallet() {
               </thead>
               <tbody>
                 {filteredTx.length ? (
-                  filteredTx.map((t, idx) => (
+                  txPaginated.data.map((t, idx) => (
                     <tr key={t._id || idx}>
                       <td>{idx + 1}</td>
                       <td>
@@ -244,6 +286,11 @@ export default function ClientWallet() {
                 )}
               </tbody>
             </Table>
+            <PaginationControls
+            page={txPage}
+            totalPages={txPaginated.totalPages}
+            onChange={setTxPage}
+          />
           </div>
         </Card.Body>
       </Card>
@@ -264,7 +311,7 @@ export default function ClientWallet() {
             </thead>
             <tbody>
               {rechargeRequests.length ? (
-                rechargeRequests.map((r, i) => (
+                rechargePaginated.data.map((r, i) => (
                   <tr key={r._id || i}>
                     <td>{i + 1}</td>
                     <td>₹{r.amount}</td>
@@ -294,6 +341,11 @@ export default function ClientWallet() {
               )}
             </tbody>
           </Table>
+          <PaginationControls
+            page={rechargePage}
+            totalPages={rechargePaginated.totalPages}
+            onChange={setRechargePage}
+          />
         </Card.Body>
       </Card>
 
@@ -312,7 +364,7 @@ export default function ClientWallet() {
                 </tr>
               </thead>
               <tbody>
-                {vendors.map((v, i) => (
+                {vendorPaginated.data.map((v, i) => (
                   <tr key={v._id || i}>
                     <td>{i + 1}</td>
                     <td className="fw-semibold">{v.vendor_name}</td>
@@ -326,9 +378,15 @@ export default function ClientWallet() {
                 ))}
               </tbody>
             </Table>
+            
           ) : (
             <p className="text-muted">No vendors available</p>
           )}
+          <PaginationControls
+            page={vendorPage}
+            totalPages={vendorPaginated.totalPages}
+            onChange={setVendorPage}
+          />
         </Card.Body>
       </Card>
 

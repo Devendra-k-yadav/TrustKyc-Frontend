@@ -10,6 +10,25 @@ export const fetchAdminClients = createAsyncThunk(
   }
 );
 
+// assignproduct to client
+
+export const assignProductToClient = createAsyncThunk(
+  "adminClients/assignProduct",
+  async (payload, thunkAPI) => {
+    try {
+      const res = await axios.post(
+        "/admin/products/assign-product",
+        payload
+      );
+
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Assign failed"
+      );
+    }
+  }
+);
 
 const adminClientsSlice = createSlice({
   name: "adminClients",

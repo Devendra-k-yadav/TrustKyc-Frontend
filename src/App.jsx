@@ -124,7 +124,7 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
       {!isDocsPage && <Sidebar />}
 
       <div
-        className={`flex-grow-1 bg-light ${
+        className={`flex-grow-1  ${
           isDocsPage ? "w-100" : "main-content"
         }`}
         style={{ minHeight: "100vh" }}
@@ -184,6 +184,22 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
 
 /* ================= MAIN APP ================= */
 const App = () => {
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // ✅ Only apply dark mode for admin
+    if (user.role === "admin") {
+      const savedTheme = localStorage.getItem("admin-theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    } else {
+      // ✅ Client always light
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+
+  }, [user]);
+  
   return (
     <>
       {/* ✅ GLOBAL TOAST CONTAINER */}
@@ -194,7 +210,7 @@ const App = () => {
         closeOnClick
         pauseOnHover
       />
-
+      
       <BrowserRouter>
         <AuthInitializer>
           <VendorApiKeysProvider>

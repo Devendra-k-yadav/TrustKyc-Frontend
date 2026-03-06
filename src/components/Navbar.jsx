@@ -34,6 +34,9 @@ const Navbar = ({ pageTitle }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const userInitial =
+  user?.name?.charAt(0)?.toUpperCase() || "U";
+
   return (
     <header className="topbar navbar-fixed">
 
@@ -74,11 +77,25 @@ const Navbar = ({ pageTitle }) => {
         
 
         <div style={{ position: "relative" }} ref={popupRef}>
-          <FaUserCircle
-            className="user-icon"
-            style={{ cursor: "pointer", fontSize: 28 }}
-            onClick={() => setShowProfile(!showProfile)}
-          />
+          <div
+  onClick={() => setShowProfile(!showProfile)}
+  style={{
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    background: "rgb(228, 34, 47)",
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    cursor: "pointer",
+    userSelect: "none"
+  }}
+>
+  {userInitial}
+</div>
 
           {showProfile && (
             <div className="profile-popup">

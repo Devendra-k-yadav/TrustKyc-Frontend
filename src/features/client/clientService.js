@@ -1,7 +1,7 @@
 // src/features/client/clientService.js
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/client";
+const API_URL = "http://localhost:5000/api";
 
 // ---------- AUTH HEADER ----------
 const authHeader = (token) => ({
@@ -12,18 +12,18 @@ const authHeader = (token) => ({
 
 // ---------- CLIENT APIS ----------
 const fetchClientApis = async (token) => {
-  const res = await axios.get(`${API_URL}/my-apis`, authHeader(token));
+  const res = await axios.get(`${API_URL}/client/my-apis`, authHeader(token));
   return res.data.data; // backend sends data
 };
 
 const fetchClientUsage = async (token) => {
-  const res = await axios.get(`${API_URL}/usage`, authHeader(token));
+  const res = await axios.get(`${API_URL}/client/usage`, authHeader(token));
   return res.data.data || [];
 };
 
 const callApi = async (apiId, token) => {
   const res = await axios.post(
-    `${API_URL}/call-api/${apiId}`,
+    `${API_URL}/client/call-api/${apiId}`,
     {},
     authHeader(token)
   );
@@ -33,17 +33,10 @@ const callApi = async (apiId, token) => {
 // ASSIGN PRODUCT TO CLIENT
 const assignProductToClient = async (payload, token) => {
 
-  console.log("SERVICE PAYLOAD:", payload);
-  console.log("SERVICE TOKEN:", token);
-
   const res = await axios.post(
-    `${API_URL}/products/admin/assign-product`,
+    `${BASE_URL}/admin/products/assign-product`, // ✅ Clean & Correct
     payload,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    authHeader(token)
   );
 
   return res.data;
@@ -63,7 +56,7 @@ const assignProductToClient = async (payload, token) => {
 
 // GET WALLET
 const fetchWallet = async (token) => {
-  const res = await axios.get(`${API_URL}/wallet`, authHeader(token));
+  const res = await axios.get(`${API_URL}/client/wallet`, authHeader(token));
 
   // backend response: { success, wallet, vendors }
   return {
@@ -75,7 +68,7 @@ const fetchWallet = async (token) => {
 // INSTANT RECHARGE
 const rechargeWallet = async (payload, token) => {
   const res = await axios.post(
-    `${API_URL}/wallet/recharge`,
+    `${API_URL}/client/wallet/recharge`,
     payload,
     authHeader(token)
   );
@@ -85,7 +78,7 @@ const rechargeWallet = async (payload, token) => {
 // RECHARGE REQUEST (FIXED ROUTE)
 const requestRecharge = async (payload, token) => {
   const res = await axios.post(
-    `${API_URL}/wallet/recharge-request`,
+    `${API_URL}/client/wallet/recharge-request`,
     payload,
     authHeader(token)
   );
@@ -95,7 +88,7 @@ const requestRecharge = async (payload, token) => {
 // PAY VENDOR
 const payVendor = async (payload, token) => {
   const res = await axios.post(
-    `${API_URL}/wallet/pay-vendor`,
+    `${API_URL}/client/wallet/pay-vendor`,
     payload,
     authHeader(token)
   );
