@@ -8,7 +8,7 @@ import trialCenterReducer from "../features/trialCenter/trialCenterSlice";
 import clientReportsReducer from
   "../features/clientReports/clientReportsSlice";
   import vendorApiKeysReducer from "../features/vendorApiKeys/vendorApiKeysSlice";
-  import apiManagementReducer from "../features/apiManagement/apiManagementSlice";
+  
   import adminAppReducer from "../features/appManagement/adminAppSlice";
   import adminClientsReducer from "../features/adminClients/adminClientsSlice";
   import balanceReducer from "../features/balance/balanceSlice";
@@ -23,7 +23,7 @@ export const store = configureStore({
     trialCenter: trialCenterReducer,
     clientReports: clientReportsReducer,
     vendorApiKeys: vendorApiKeysReducer,
-    apiManagement: apiManagementReducer,
+   
     adminApps: adminAppReducer,
     adminClients: adminClientsReducer,
     balance: balanceReducer,

@@ -22,7 +22,7 @@ import { BalanceProvider } from "./context/BalanceContext";
 import Dashboard from "./pages/admin/Dashboard";
 import VendorApiKeys from "./pages/admin/VendorApiKeys";
 import Users from "./pages/admin/Users";
-import ApiManagement from "./pages/admin/ApiManagement";
+// import ApiManagement from "./pages/admin/ApiManagement";
 import Pricing from "./pages/admin/Pricing";
 import Balance from "./pages/admin/Balance";
 import ClientPortal from "./pages/admin/ClientPortal";
@@ -36,7 +36,7 @@ import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import ClientProfile from "./pages/client/ClientProfile";
 import ClientAPIs from "./pages/client/ClientAPIs";
-import ClientUsage from "./pages/client/ClientUsage";
+// import ClientUsage from "./pages/client/ClientUsage";
 import ClientApps from "./pages/client/ClientApps";
 import ClientProducts from "./pages/client/ClientProducts";
 import ClientWallet from "./pages/client/ClientWallet";
@@ -82,7 +82,7 @@ const Layout = () => {
     "/admin/dashboard": "Dashboard",
     "/vendor": "Vendor & API Key Management",
     "/user-management": "Users & Manager Management",
-    "/api-management": "API Management",
+   
     "/admin/apps": "App Management",
     "/pricing": "Pricing Management",
     "/balance": "Balance Management",
@@ -93,7 +93,7 @@ const Layout = () => {
 
     "/dashboard": "Dashboard",
 "/apis": "My APIs",
-"/usage": "API Usage",
+
 "/apps": "My Apps",
 "/products": "Products",
 "/wallet": "Wallet Balance",
@@ -138,7 +138,7 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
             <Route path="/admin/dashboard" element={<Protected allowedRoles={["admin"]}><Dashboard /></Protected>} />
             <Route path="/vendor" element={<Protected allowedRoles={["admin"]}><VendorApiKeys /></Protected>} />
             <Route path="/user-management" element={<Protected allowedRoles={["admin"]}><Users /></Protected>} />
-            <Route path="/api-management" element={<Protected allowedRoles={["admin"]}><ApiManagement /></Protected>} />
+            
             <Route path="/admin/apps" element={<Protected allowedRoles={["admin"]}><AppManagement /></Protected>} />
             <Route path="/pricing" element={<Protected allowedRoles={["admin"]}><Pricing /></Protected>} />
             <Route path="/balance" element={<Protected allowedRoles={["admin"]}><Balance /></Protected>} />
@@ -165,7 +165,7 @@ if (location.pathname.startsWith("/apps/") && location.pathname !== "/apps") {
             {/* Client */}
             <Route path="/dashboard" element={<Protected allowedRoles={["client"]}><ClientDashboard /></Protected>} />
 <Route path="/apis" element={<Protected allowedRoles={["client"]}><ClientAPIs /></Protected>} />
-<Route path="/usage" element={<Protected allowedRoles={["client"]}><ClientUsage /></Protected>} />
+
 <Route path="/apps" element={<Protected allowedRoles={["client"]}><ClientApps /></Protected>} />
 <Route path="/products" element={<Protected allowedRoles={["client"]}><ClientProducts /></Protected>} />
 <Route path="/wallet" element={<Protected allowedRoles={["client"]}><ClientWallet /></Protected>} />

@@ -6,8 +6,8 @@ import clientService from "./clientService";
 
 const initialState = {
   // APIs
-  apis: [],
-  usage: [],
+  // apis: [],
+  // usage: [],
 
   // Wallet
   wallet: {
@@ -28,44 +28,7 @@ const initialState = {
 
 /* ================= THUNKS ================= */
 
-// -------- Fetch Client APIs --------
-export const getClientApis = createAsyncThunk(
-  "client/getApis",
-  async (token, thunkAPI) => {
-    try {
-      const data = await clientService.fetchClientApis(token);
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return thunkAPI.rejectWithValue("Failed to fetch client APIs");
-    }
-  }
-);
 
-// -------- Refresh Usage --------
-export const refreshClientUsage = createAsyncThunk(
-  "client/refreshUsage",
-  async (token, thunkAPI) => {
-    try {
-      return await clientService.fetchClientUsage(token);
-    } catch {
-      return thunkAPI.rejectWithValue("Failed to refresh usage");
-    }
-  }
-);
-
-// -------- Call Client API --------
-export const callClientApi = createAsyncThunk(
-  "client/callApi",
-  async ({ apiId, token }, thunkAPI) => {
-    try {
-      return await clientService.callApi(apiId, token);
-    } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err?.response?.data?.message || "API call failed"
-      );
-    }
-  }
-);
 
 // -------- Get Wallet --------
 export const getClientWallet = createAsyncThunk(
@@ -139,36 +102,7 @@ const clientSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      /* ---------- APIs ---------- */
-      .addCase(getClientApis.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getClientApis.fulfilled, (state, action) => {
-        state.loading = false;
-        state.apis = action.payload; // ALWAYS ARRAY
-      })
-      .addCase(getClientApis.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      /* ---------- Usage ---------- */
-      .addCase(refreshClientUsage.fulfilled, (state, action) => {
-        state.usage = Array.isArray(action.payload) ? action.payload : [];
-      })
-
-      /* ---------- Call API ---------- */
-      .addCase(callClientApi.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(callClientApi.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(callClientApi.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
+      
       /* ---------- Wallet ---------- */
       .addCase(getClientWallet.pending, (state) => {
         state.loading = true;

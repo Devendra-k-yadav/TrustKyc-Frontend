@@ -27,7 +27,7 @@ import {
 } from "../../features/products/productsSlice";
 
 import {
-  refreshClientUsage,
+  // refreshClientUsage,
   getClientWallet,
 } from "../../features/client/clientSlice";
 
@@ -61,7 +61,7 @@ export default function ClientDashboard() {
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchSubscribedProducts());
-    dispatch(refreshClientUsage());
+    // dispatch(refreshClientUsage());
     dispatch(getClientWallet()); // ✅ AVAILABLE BALANCE SOURCE
   }, [dispatch]);
 

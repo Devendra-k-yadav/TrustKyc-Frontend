@@ -10,47 +10,7 @@ const authHeader = (token) => ({
   },
 });
 
-// ---------- CLIENT APIS ----------
-const fetchClientApis = async (token) => {
-  const res = await axios.get(`${API_URL}/client/my-apis`, authHeader(token));
-  return res.data.data; // backend sends data
-};
 
-const fetchClientUsage = async (token) => {
-  const res = await axios.get(`${API_URL}/client/usage`, authHeader(token));
-  return res.data.data || [];
-};
-
-const callApi = async (apiId, token) => {
-  const res = await axios.post(
-    `${API_URL}/client/call-api/${apiId}`,
-    {},
-    authHeader(token)
-  );
-  return res.data;
-};
-
-// ASSIGN PRODUCT TO CLIENT
-const assignProductToClient = async (payload, token) => {
-
-  const res = await axios.post(
-    `${BASE_URL}/admin/products/assign-product`, // ✅ Clean & Correct
-    payload,
-    authHeader(token)
-  );
-
-  return res.data;
-};
-
-// const assignProductToClient = async (payload, token) => {
-//   const res = await axios.post(
-//     `${API_URL}/products/admin/assign-product`,
-//     payload,
-//     authHeader(token)
-//   );
-
-//   return res.data;
-// };
 
 /* ================= WALLET ================= */
 
@@ -96,14 +56,10 @@ const payVendor = async (payload, token) => {
 };
 
 export default {
-  fetchClientApis,
-  fetchClientUsage,
-  callApi,
-
-  // wallet
+  
   fetchWallet,
   rechargeWallet,
   requestRecharge,
   payVendor,
-  assignProductToClient,
+ 
 };
